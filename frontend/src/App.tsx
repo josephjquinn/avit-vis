@@ -5,6 +5,7 @@ import Graph from "./pages/Graph";
 import NavBar from "./components/Navbar/Navbar";
 import API from "./pages/API";
 import Visualize from "./pages/Visualize";
+import Metrics from "./pages/Metrics";
 import "./App.css";
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/test" element={<Test />} />
         <Route path="/graph" element={<Graph />} />
+        <Route path="/metrics" element={<Metrics />} />
         <Route path="/api" element={<API />} />
         <Route path="/visualize" element={<Visualize />} />
       </Routes>

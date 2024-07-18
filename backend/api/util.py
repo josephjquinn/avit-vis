@@ -29,6 +29,7 @@ def process_case_data(case):
         "thermalcollision2d/wwnd_valid_nrmse": "wwnd_valid_nrmse",
         "thermalcollision2d/wwnd_valid_rmse": "wwnd_valid_rmse",
         "thermalcollision2d/wwnd_valid_l1": "wwnd_valid_l1",
+        "time/train_time": "train_time",
     }
 
     data_dict = {metric: [] for metric in ["epoch"] + list(metric_rename_map.values())}
@@ -41,7 +42,7 @@ def process_case_data(case):
         [f for f in os.listdir(subdir_path) if f.endswith(".json")], key=extract_epoch
     )
 
-    for filename in files:
+    for filename in files[:90]:
         filepath = os.path.join(subdir_path, filename)
         with open(filepath, "r") as file:
             data = json.load(file)
@@ -50,7 +51,18 @@ def process_case_data(case):
             for original_metric, renamed_metric in metric_rename_map.items():
                 data_dict[renamed_metric].append(data.get(original_metric, np.nan))
 
-    with open("sample.json", "w") as outfile:
+    if len(data_dict["epoch"]) >= 10:
+        last_10_epochs_rmse = data_dict["valid_rmse"][-10:]
+        final_training_accuracy = np.nanmean(last_10_epochs_rmse)
+    else:
+        final_training_accuracy = np.nan
+
+    training_sum = np.nansum(data_dict["train_time"])
+
+    data_dict["final_training_accuracy"] = final_training_accuracy
+    data_dict["total_training_time"] = training_sum
+
+    with open(f"{case}_data.json", "w") as outfile:
         json.dump(data_dict, outfile)
 
     return data_dict
@@ -80,6 +92,7 @@ def process_all_cases(data_dir="./metrics"):
         "thermalcollision2d/wwnd_valid_nrmse": "wwnd_valid_nrmse",
         "thermalcollision2d/wwnd_valid_rmse": "wwnd_valid_rmse",
         "thermalcollision2d/wwnd_valid_l1": "wwnd_valid_l1",
+        "time/train_time": "train_time",
     }
 
     all_data = {}
@@ -101,7 +114,7 @@ def process_all_cases(data_dir="./metrics"):
         if len(files) <= 25:
             continue
 
-        for filename in files[:90]:
+        for filename in files[:90]:  # Process only the first 90 epochs
             filepath = os.path.join(subdir_path, filename)
             with open(filepath, "r") as file:
                 data = json.load(file)
@@ -109,6 +122,17 @@ def process_all_cases(data_dir="./metrics"):
                 data_dict["epoch"].append(epoch)
                 for original_metric, renamed_metric in metric_rename_map.items():
                     data_dict[renamed_metric].append(data.get(original_metric, np.nan))
+
+        if len(data_dict["epoch"]) >= 10:
+            last_10_epochs_rmse = data_dict["valid_rmse"][-10:]
+            final_training_accuracy = np.nanmean(last_10_epochs_rmse)
+        else:
+            final_training_accuracy = np.nan
+
+        training_sum = np.nansum(data_dict["train_time"])
+
+        data_dict["final_training_acc"] = final_training_accuracy
+        data_dict["total_training_time"] = training_sum
 
         all_data[case] = data_dict
 

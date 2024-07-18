@@ -59,7 +59,7 @@ def process_case_data(case):
 
     training_sum = np.nansum(data_dict["train_time"])
 
-    data_dict["final_training_accuracy"] = final_training_accuracy
+    data_dict["final_training_acc"] = final_training_accuracy
     data_dict["total_training_time"] = training_sum
 
     with open(f"{case}_data.json", "w") as outfile:

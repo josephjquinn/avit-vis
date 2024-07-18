@@ -18,7 +18,14 @@ const NavBar: React.FC = () => {
         >
           API
         </NavLink>
-
+        <NavLink
+          to="/metrics"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+        >
+          Metrics
+        </NavLink>
         <NavLink
           to="/visualize"
           className={({ isActive }) =>

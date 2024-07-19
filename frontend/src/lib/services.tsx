@@ -1,90 +1,30 @@
-import axios from "axios";
+import metricsData from "../data/all_cases_data.json"; // Import the static JSON file
+import normalizationData from "../../public/radar_data.json"; // Import the static JSON file
 
-export const testServer = async () => {
-  try {
-    const response = await fetch("http://localhost:5142/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+import { MetricsData, NormalizationData } from "../types";
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+type MetricsDataMap = Record<string, MetricsData>;
+type NormalizationDataMap = Record<string, NormalizationData>;
 
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return { error: "Error fetching data" };
+export const getMetricsData = (caseName: string): MetricsData | null => {
+  const data = (metricsData as MetricsDataMap)[caseName];
+  if (data) {
+    return data;
+  } else {
+    throw new Error(`No data found for case ${caseName}`);
   }
 };
 
-export const multiplyBySeven = async (
-  num: number,
-): Promise<{ input?: number; result?: number; error?: string }> => {
-  try {
-    const response = await fetch(
-      `http://localhost:5142/multiply_by_seven?num=${num}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return { error: "Error fetching data" };
-  }
+export const getCaseNames = (): string[] => {
+  return Object.keys(metricsData as MetricsDataMap);
 };
-
-export const predict_num = async (file: File): Promise<string | undefined> => {
-  try {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    const response = await axios.post(
-      "http://localhost:5142/pred_numeric",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      },
-    );
-
-    return response.data.pred;
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    return undefined;
-  }
-};
-
-export const predict_fash = async (file: File): Promise<string | undefined> => {
-  try {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    const response = await axios.post(
-      "http://localhost:5142/pred_fashion",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      },
-    );
-
-    return response.data.pred;
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    return undefined;
+export const getNormalizationData = (
+  caseName: string,
+): NormalizationData | null => {
+  const data = (normalizationData as NormalizationDataMap)[caseName];
+  if (data) {
+    return data;
+  } else {
+    throw new Error(`No normalization data found for case ${caseName}`);
   }
 };

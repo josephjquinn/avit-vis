@@ -26,6 +26,15 @@ const NavBar: React.FC = () => {
         >
           Metrics
         </NavLink>
+
+        <NavLink
+          to="/tvis"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+        >
+          Tvis
+        </NavLink>
         <NavLink
           to="/visualize"
           className={({ isActive }) =>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import LChart from "../components/LChart";
 import RChart from "../components/RChart";
 import Slider from "@mui/material/Slider";
 import data1 from "../data/0.01train.json";
@@ -79,7 +78,6 @@ const App = () => {
         />
       </div>
       <h2 style={{ color: "white" }}>Training and Validation Loss</h2>
-      <LChart data={data} />
       <h2 style={{ color: "white" }}>Accuracy</h2>
       <RChart />
       <RChart />

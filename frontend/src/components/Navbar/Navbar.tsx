@@ -11,14 +11,6 @@ const NavBar: React.FC = () => {
       </NavLink>
       <nav className="navbar">
         <NavLink
-          to="/api"
-          className={({ isActive }) =>
-            isActive ? "nav-link active" : "nav-link"
-          }
-        >
-          API
-        </NavLink>
-        <NavLink
           to="/metrics"
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
@@ -28,36 +20,12 @@ const NavBar: React.FC = () => {
         </NavLink>
 
         <NavLink
-          to="/tvis"
-          className={({ isActive }) =>
-            isActive ? "nav-link active" : "nav-link"
-          }
-        >
-          Tvis
-        </NavLink>
-        <NavLink
-          to="/visualize"
-          className={({ isActive }) =>
-            isActive ? "nav-link active" : "nav-link"
-          }
-        >
-          Visualize
-        </NavLink>
-        <NavLink
           to="/about"
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
           }
         >
           About
-        </NavLink>
-        <NavLink
-          to="/graph"
-          className={({ isActive }) =>
-            isActive ? "nav-link active" : "nav-link"
-          }
-        >
-          Graph
         </NavLink>
       </nav>
     </header>

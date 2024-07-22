@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { MetricsData, NormalizationData } from "../types";
 import MetricsChart from "../components/MetricsChart";
+import SoloLchart from "../components/SoloLChart";
 import RChart from "../components/RChart";
-import HChart from "../components/HChart";
 import {
   getMetricsData,
   getCaseNames,
@@ -77,6 +77,28 @@ const Metrics: React.FC = () => {
     Valid_RMSE: metricsDataState.valid_rmse[index],
   }));
 
+  const singleChartData = metricsDataState.epoch.map((epoch, index) => ({
+    epoch,
+    Train_RMSE: metricsDataState.train_rmse[index],
+    Train_NRMSE: metricsDataState.train_nrmse[index],
+    Train_L1: metricsDataState.train_l1[index],
+    Valid_NRMSE: metricsDataState.valid_nrmse[index],
+    Valid_RMSE: metricsDataState.valid_rmse[index],
+    Valid_L1: metricsDataState.valid_l1[index],
+    Dens_Valid_NRMSE: metricsDataState.dens_valid_nrmse[index],
+    Dens_Valid_RMSE: metricsDataState.dens_valid_rmse[index],
+    Dens_Valid_L1: metricsDataState.dens_valid_l1[index],
+    PTemp_Valid_NRMSE: metricsDataState.ptemp_valid_nrmse[index],
+    PTemp_Valid_RMSE: metricsDataState.ptemp_valid_rmse[index],
+    PTemp_Valid_L1: metricsDataState.ptemp_valid_l1[index],
+    UWnd_Valid_NRMSE: metricsDataState.uwnd_valid_nrmse[index],
+    UWnd_Valid_RMSE: metricsDataState.uwnd_valid_rmse[index],
+    UWnd_Valid_L1: metricsDataState.uwnd_valid_l1[index],
+    WWnd_Valid_NRMSE: metricsDataState.wwnd_valid_nrmse[index],
+    WWnd_Valid_RMSE: metricsDataState.wwnd_valid_rmse[index],
+    WWnd_Valid_L1: metricsDataState.wwnd_valid_l1[index],
+  }));
+
   // Generate unique key based on chartData
   const chartKey = JSON.stringify(chartData);
 
@@ -95,8 +117,8 @@ const Metrics: React.FC = () => {
       </select>
 
       {/* Metrics Chart */}
+      <SoloLchart chartData={singleChartData} />
       <MetricsChart key={chartKey} chartData={chartData} />
-
       {/* R Chart */}
       <RChart data={normalizationDataState} />
     </div>

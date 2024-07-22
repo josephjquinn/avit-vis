@@ -20,6 +20,15 @@ const NavBar: React.FC = () => {
         </NavLink>
 
         <NavLink
+          to="/compare"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+        >
+          Compare
+        </NavLink>
+
+        <NavLink
           to="/about"
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"

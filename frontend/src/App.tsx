@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import NavBar from "./components/Navbar/Navbar";
 import Metrics from "./pages/Metrics";
+import Compare from "./pages/Compare";
 import "./App.css";
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/metrics" element={<Metrics />} />
         <Route path="/about" element={<About />} />
+        <Route path="/compare" element={<Compare />} />
       </Routes>
     </BrowserRouter>
   );

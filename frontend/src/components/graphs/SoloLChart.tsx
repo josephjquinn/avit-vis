@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   LineChart as RechartsLineChart,
   Line,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   TooltipProps,
   Legend,

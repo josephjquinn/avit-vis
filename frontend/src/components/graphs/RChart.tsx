@@ -10,24 +10,29 @@ import {
   TooltipProps,
   Legend,
 } from "recharts";
-import { NormalizationData } from "../../types"; // Adjust the import path as needed
-import { colorMap } from "../../colors"; // Adjust the import path as needed
+import { NormalizationData } from "../../types";
+import { colorMap } from "../../colors";
 
 interface RadarChartComponentProps {
-  dataSets: { name: string; data: NormalizationData }[]; // Array of datasets
+  dataSets: { name: string; data: NormalizationData }[];
 }
 
-// Custom Tooltip Component
+interface RadarData {
+  subject: string;
+  [key: string]: number | string;
+}
+
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
   active,
   payload,
   label,
 }) => {
   if (active && payload && payload.length) {
-    // Organize tooltip data by case
     const tooltipData = payload.reduce(
       (acc: { [key: string]: number }, item) => {
-        acc[item.name] = item.value;
+        if (item.name && item.value !== undefined) {
+          acc[item.name] = item.value;
+        }
         return acc;
       },
       {},
@@ -40,7 +45,7 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
           <p
             key={caseName}
             className="text-sm"
-            style={{ color: colorMap[caseName] }}
+            style={{ color: colorMap[caseName] || "#000000" }}
           >
             {caseName}:<span className="ml-2">{value.toFixed(2)}</span>
           </p>
@@ -52,7 +57,6 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
 };
 
 const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
-  // Convert NormalizationData to format suitable for RadarChart
   const radarData = dataSets.flatMap(({ name, data }) => [
     { subject: "Train RMSE", name, value: data.train_rmse },
     { subject: "Train NRMSE", name, value: data.train_nrmse },
@@ -75,16 +79,25 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     { subject: "Total Training Time", name, value: data.train_time },
   ]);
 
-  // Create a radar data structure for each subject
-  const radarDataFormatted = radarData.reduce((acc, curr) => {
-    const existing = acc.find((d) => d.subject === curr.subject);
-    if (existing) {
-      existing[curr.name] = curr.value;
-    } else {
-      acc.push({ subject: curr.subject, [curr.name]: curr.value });
-    }
-    return acc;
-  }, [] as any[]);
+  const radarDataFormatted: RadarData[] = radarData.reduce(
+    (acc: RadarData[], curr) => {
+      const existing = acc.find((d) => d.subject === curr.subject);
+      if (existing) {
+        if (curr.value !== undefined) {
+          existing[curr.name] = curr.value as number;
+        }
+      } else {
+        if (curr.value !== undefined) {
+          acc.push({
+            subject: curr.subject,
+            [curr.name]: curr.value as number,
+          });
+        }
+      }
+      return acc;
+    },
+    [],
+  );
 
   return (
     <div style={{ width: "100%", height: 500 }}>

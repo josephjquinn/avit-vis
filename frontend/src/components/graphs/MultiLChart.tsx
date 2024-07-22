@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   TooltipProps,
 } from "recharts";
-import { colorMap } from "../../colors"; // Adjust the import path as needed
+import { colorMap } from "../../colors";
 
 interface Props {
   chartData: { epoch: number; [key: string]: number }[];

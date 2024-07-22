@@ -8,12 +8,19 @@ import {
 } from "../lib/services";
 import { NormalizationData } from "../types";
 
+interface MetricsData {
+  epoch: number[];
+  valid_rmse?: number[];
+}
+
+interface MetricsDataMap {
+  [key: string]: MetricsData | null;
+}
+
 const Compare: React.FC = () => {
-  const [metricsDataState, setMetricsDataState] = useState<{
-    [key: string]: any;
-  }>({});
+  const [metricsDataState, setMetricsDataState] = useState<MetricsDataMap>({});
   const [normalizationDataState, setNormalizationDataState] = useState<{
-    [key: string]: NormalizationData;
+    [key: string]: NormalizationData | null;
   }>({});
   const [caseNames, setCaseNames] = useState<string[]>([]);
   const [selectedCases, setSelectedCases] = useState<Set<string>>(new Set());
@@ -22,7 +29,7 @@ const Compare: React.FC = () => {
   useEffect(() => {
     const fetchCaseNames = async () => {
       try {
-        const names = await getCaseNames();
+        const names = getCaseNames();
         setCaseNames(names);
       } catch (err) {
         setError(
@@ -40,12 +47,12 @@ const Compare: React.FC = () => {
         const metricsData = await Promise.all(
           caseNames.map((name) => getMetricsData(name)),
         );
-        const metricsDataMap = caseNames.reduce(
+        const metricsDataMap: MetricsDataMap = caseNames.reduce(
           (map, name, index) => {
-            map[name] = metricsData[index];
+            map[name] = metricsData[index] || null;
             return map;
           },
-          {} as { [key: string]: any },
+          {} as MetricsDataMap,
         );
         setMetricsDataState(metricsDataMap);
 
@@ -54,10 +61,10 @@ const Compare: React.FC = () => {
         );
         const normalizationDataMap = caseNames.reduce(
           (map, name, index) => {
-            map[name] = normalizationData[index];
+            map[name] = normalizationData[index] || null;
             return map;
           },
-          {} as { [key: string]: NormalizationData },
+          {} as { [key: string]: NormalizationData | null },
         );
         setNormalizationDataState(normalizationDataMap);
       } catch (err) {
@@ -93,7 +100,6 @@ const Compare: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Prepare data for MetricsChart
   const selectedData = Array.from(selectedCases).flatMap((caseName) => {
     const caseData = metricsDataState[caseName];
     if (!caseData || !Array.isArray(caseData.epoch)) return [];
@@ -106,7 +112,6 @@ const Compare: React.FC = () => {
     }));
   });
 
-  // Group data by epoch and merge the values
   const chartData = selectedData.reduce(
     (acc, data) => {
       const existing = acc.find((d) => d.epoch === data.epoch);
@@ -119,11 +124,9 @@ const Compare: React.FC = () => {
     },
     [] as { epoch: number; [key: string]: number }[],
   );
-
-  // Prepare radar data
   const radarData = Array.from(selectedCases).map((caseName) => ({
     name: caseName,
-    data: normalizationDataState[caseName],
+    data: normalizationDataState[caseName] || ({} as NormalizationData),
   }));
 
   return (

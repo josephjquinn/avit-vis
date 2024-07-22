@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import MetricsChart from "../components/MetricsChart";
-import RadarChartComponent from "../components/RadarChartComponent";
+import MultiLChart from "../components/graphs/MultiLChart";
+import RChart from "../components/graphs/RChart";
 import {
   getMetricsData,
   getNormalizationData,
   getCaseNames,
 } from "../lib/services";
 import { NormalizationData } from "../types";
+
 const Compare: React.FC = () => {
   const [metricsDataState, setMetricsDataState] = useState<{
     [key: string]: any;
@@ -83,6 +84,11 @@ const Compare: React.FC = () => {
     });
   };
 
+  const handleSelectTiCases = () => {
+    const tiCases = caseNames.filter((name) => name.includes("ti"));
+    setSelectedCases(new Set(tiCases));
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -123,6 +129,9 @@ const Compare: React.FC = () => {
   return (
     <div>
       <h2>Select Cases to Compare</h2>
+      <button onClick={handleSelectTiCases} className="btn btn-primary mb-4">
+        Select All "ti" Cases
+      </button>
       <div>
         {caseNames.map((name) => (
           <label key={name}>
@@ -135,12 +144,18 @@ const Compare: React.FC = () => {
           </label>
         ))}
       </div>
-      {selectedCases.size > 0 && (
-        <div>
-          <MetricsChart chartData={chartData} />
-          <RadarChartComponent dataSets={radarData} />
-        </div>
-      )}
+      <div style={{ display: "flex" }}>
+        <MultiLChart
+          chartData={chartData.length > 0 ? chartData : [{ epoch: 0 }]}
+        />
+        <RChart
+          dataSets={
+            radarData.length > 0
+              ? radarData
+              : [{ name: "No Data", data: {} as NormalizationData }]
+          }
+        />
+      </div>
     </div>
   );
 };

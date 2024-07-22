@@ -10,8 +10,8 @@ import {
   TooltipProps,
   Legend,
 } from "recharts";
-import { NormalizationData } from "../types"; // Adjust the import path as needed
-import { colorMap } from "../colors"; // Adjust the import path as needed
+import { NormalizationData } from "../../types"; // Adjust the import path as needed
+import { colorMap } from "../../colors"; // Adjust the import path as needed
 
 interface RadarChartComponentProps {
   dataSets: { name: string; data: NormalizationData }[]; // Array of datasets
@@ -51,9 +51,7 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
   return null;
 };
 
-const RadarChartComponent: React.FC<RadarChartComponentProps> = ({
-  dataSets,
-}) => {
+const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
   // Convert NormalizationData to format suitable for RadarChart
   const radarData = dataSets.flatMap(({ name, data }) => [
     { subject: "Train RMSE", name, value: data.train_rmse },
@@ -89,7 +87,7 @@ const RadarChartComponent: React.FC<RadarChartComponentProps> = ({
   }, [] as any[]);
 
   return (
-    <div style={{ width: "100%", height: 600 }}>
+    <div style={{ width: "100%", height: 500 }}>
       <ResponsiveContainer>
         <RadarChart outerRadius={200} data={radarDataFormatted}>
           <PolarGrid />
@@ -102,7 +100,7 @@ const RadarChartComponent: React.FC<RadarChartComponentProps> = ({
               dataKey={name}
               stroke={colorMap[name] || "#000000"}
               fill={colorMap[name] || "#000000"}
-              fillOpacity={0.6}
+              fillOpacity={0.3}
             />
           ))}
           <Tooltip content={<CustomTooltip />} />
@@ -113,4 +111,4 @@ const RadarChartComponent: React.FC<RadarChartComponentProps> = ({
   );
 };
 
-export default RadarChartComponent;
+export default RChart;

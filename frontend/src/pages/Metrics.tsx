@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MetricsData, NormalizationData } from "../types";
-import MetricsChart from "../components/MetricsChart";
-import SoloLchart from "../components/SoloLChart";
-import RChart from "../components/RChart";
+import SoloLchart from "../components/graphs/SoloLChart";
 import {
   getMetricsData,
   getCaseNames,
@@ -118,9 +116,6 @@ const Metrics: React.FC = () => {
 
       {/* Metrics Chart */}
       <SoloLchart chartData={singleChartData} />
-      <MetricsChart key={chartKey} chartData={chartData} />
-      {/* R Chart */}
-      <RChart data={normalizationDataState} />
     </div>
   );
 };

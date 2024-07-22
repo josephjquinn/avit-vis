@@ -114,7 +114,8 @@ const MetricsChart: React.FC<Props> = ({ chartData }) => {
         <ResponsiveContainer>
           <RechartsLineChart data={chartData}>
             <XAxis dataKey="epoch" />
-            <YAxis />
+            <YAxis scale="log" domain={["auto", "auto"]} />
+
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             {selectedVars.map((variable) => (

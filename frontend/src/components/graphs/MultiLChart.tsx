@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   TooltipProps,
 } from "recharts";
-import { colorMap } from "../colors"; // Adjust the import path as needed
+import { colorMap } from "../../colors"; // Adjust the import path as needed
 
 interface Props {
   chartData: { epoch: number; [key: string]: number }[];
@@ -36,11 +36,11 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
   return null;
 };
 
-const MetricsChart: React.FC<Props> = ({ chartData }) => {
+const MultiLChart: React.FC<Props> = ({ chartData }) => {
   const keys = Object.keys(chartData[0] || {}).filter((key) => key !== "epoch");
 
   return (
-    <div style={{ width: "100%", height: 400 }}>
+    <div style={{ width: "45%", height: 400 }}>
       <ResponsiveContainer>
         <RechartsLineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -70,4 +70,4 @@ const MetricsChart: React.FC<Props> = ({ chartData }) => {
   );
 };
 
-export default MetricsChart;
+export default MultiLChart;

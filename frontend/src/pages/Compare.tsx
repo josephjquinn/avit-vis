@@ -7,6 +7,7 @@ import {
   getCaseNames,
 } from "../lib/services";
 import { NormalizationData } from "../types";
+import './interface.css';
 
 interface MetricsData {
   epoch: number[];
@@ -16,6 +17,15 @@ interface MetricsData {
 interface MetricsDataMap {
   [key: string]: MetricsData | null;
 }
+
+const extractBatchSize = (caseName: string): number => {
+  const match = caseName.match(/-(\d+)-/);
+  return match ? parseInt(match[1], 10) : 0;
+};
+
+const sortCasesByBatchSize = (cases: string[]): string[] => {
+  return cases.sort((a, b) => extractBatchSize(a) - extractBatchSize(b));
+};
 
 const Compare: React.FC = () => {
   const [metricsDataState, setMetricsDataState] = useState<MetricsDataMap>({});
@@ -79,7 +89,7 @@ const Compare: React.FC = () => {
     }
   }, [caseNames]);
 
-  const handleCheckboxChange = (caseName: string) => {
+  const handleButtonClick = (caseName: string) => {
     setSelectedCases((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(caseName)) {
@@ -96,9 +106,23 @@ const Compare: React.FC = () => {
     setSelectedCases(new Set(tiCases));
   };
 
+  const handleSelectSCases = () => {
+    const sCases = caseNames.filter((name) => name.includes("s"));
+    setSelectedCases(new Set(sCases));
+  };
+
+  const handleSelectBCases = () => {
+    const bCases = caseNames.filter((name) => name.includes("b"));
+    setSelectedCases(new Set(bCases));
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  const tiCases = sortCasesByBatchSize(caseNames.filter(name => name.includes("ti")));
+  const sCases = sortCasesByBatchSize(caseNames.filter(name => name.includes("s")));
+  const bCases = sortCasesByBatchSize(caseNames.filter(name => name.includes("b")));
 
   const selectedData = Array.from(selectedCases).flatMap((caseName) => {
     const caseData = metricsDataState[caseName];
@@ -124,30 +148,65 @@ const Compare: React.FC = () => {
     },
     [] as { epoch: number; [key: string]: number }[],
   );
+
   const radarData = Array.from(selectedCases).map((caseName) => ({
     name: caseName,
     data: normalizationDataState[caseName] || ({} as NormalizationData),
   }));
 
+  const defaultRadarData = [{ name: "No Data", data: {} as NormalizationData }];
+
   return (
     <div>
       <h2>Select Cases to Compare</h2>
-      <button onClick={handleSelectTiCases} className="btn btn-primary mb-4">
+      <button onClick={handleSelectTiCases} className="button btn-primary mb-4">
         Select All "ti" Cases
       </button>
-      <div>
-        {caseNames.map((name) => (
-          <label key={name}>
-            <input
-              type="checkbox"
-              checked={selectedCases.has(name)}
-              onChange={() => handleCheckboxChange(name)}
-            />
-            {name}
-          </label>
-        ))}
+      <button onClick={handleSelectSCases} className="button btn-primary mb-4">
+        Select All "s" Cases
+      </button>
+      <button onClick={handleSelectBCases} className="button btn-primary mb-4">
+        Select All "b" Cases
+      </button>
+      <div className="button-group-container">
+        <div className="button-group">
+          <h3>TI Cases</h3>
+          {tiCases.map(name => (
+            <button
+              key={name}
+              onClick={() => handleButtonClick(name)}
+              className={`button ${selectedCases.has(name) ? 'btn-success' : 'btn-outline-secondary'}`}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+        <div className="button-group">
+          <h3>S Cases</h3>
+          {sCases.map(name => (
+            <button
+              key={name}
+              onClick={() => handleButtonClick(name)}
+              className={`button ${selectedCases.has(name) ? 'btn-success' : 'btn-outline-secondary'}`}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+        <div className="button-group">
+          <h3>B Cases</h3>
+          {bCases.map(name => (
+            <button
+              key={name}
+              onClick={() => handleButtonClick(name)}
+              className={`button ${selectedCases.has(name) ? 'btn-success' : 'btn-outline-secondary'}`}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
       </div>
-      <div style={{ display: "flex" }}>
+      <div className="chart-container">
         <MultiLChart
           chartData={chartData.length > 0 ? chartData : [{ epoch: 0 }]}
         />
@@ -155,7 +214,7 @@ const Compare: React.FC = () => {
           dataSets={
             radarData.length > 0
               ? radarData
-              : [{ name: "No Data", data: {} as NormalizationData }]
+              : defaultRadarData
           }
         />
       </div>

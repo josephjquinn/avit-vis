@@ -40,16 +40,14 @@ const MultiLChart: React.FC<Props> = ({ chartData }) => {
   const keys = Object.keys(chartData[0] || {}).filter((key) => key !== "epoch");
 
   return (
-    <div style={{ width: "45%", height: 400 }}>
+    <div style={{ width: "85%", height: 400 }}>
       <ResponsiveContainer>
         <RechartsLineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="epoch" />
           <YAxis
             scale="log"
-            domain={[0.01, 1]}
-            ticks={[0.01, 0.1, 1]}
-            tickFormatter={(tick) => tick.toExponential(1)}
+            domain={[0.01, 0.2]}
             tickCount={3}
           />
           <Tooltip content={<CustomTooltip />} />

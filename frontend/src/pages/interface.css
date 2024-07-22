@@ -1,0 +1,66 @@
+/* Compare.css */
+
+/* Layout for the button groups */
+.button-group-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.button-group {
+  flex: 1;
+  min-width: 200px; /* Adjust as needed */
+}
+
+.button-group h3 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.button {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  color: red;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.button:hover {
+  background-color: #f0f0f0;
+}
+
+.button.btn-success {
+  background-color: #28a745;
+  color: black;
+  border: none;
+}
+
+.button.btn-success:hover {
+  background-color: #218838;
+}
+
+.button.btn-outline-secondary {
+  background-color: transparent;
+  color: #6c757d;
+}
+
+.button.btn-outline-secondary:hover {
+  background-color: #e9ecef;
+}
+
+.chart-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.chart-container > * {
+  flex: 1;
+}

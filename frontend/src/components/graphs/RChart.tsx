@@ -57,6 +57,29 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
 };
 
 const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
+  // Provide default data if no cases are selected
+  const defaultRadarData: RadarData[] = [
+    { subject: "Train RMSE", "No Data": 0 },
+    { subject: "Train NRMSE", "No Data": 0 },
+    { subject: "Train L1", "No Data": 0 },
+    { subject: "Valid NRMSE", "No Data": 0 },
+    { subject: "Valid RMSE", "No Data": 0 },
+    { subject: "Valid L1", "No Data": 0 },
+    { subject: "Dens Valid NRMSE", "No Data": 0 },
+    { subject: "Dens Valid RMSE", "No Data": 0 },
+    { subject: "Dens Valid L1", "No Data": 0 },
+    { subject: "PTemp Valid NRMSE", "No Data": 0 },
+    { subject: "PTemp Valid RMSE", "No Data": 0 },
+    { subject: "PTemp Valid L1", "No Data": 0 },
+    { subject: "UWnd Valid NRMSE", "No Data": 0 },
+    { subject: "UWnd Valid RMSE", "No Data": 0 },
+    { subject: "UWnd Valid L1", "No Data": 0 },
+    { subject: "WWnd Valid NRMSE", "No Data": 0 },
+    { subject: "WWnd Valid RMSE", "No Data": 0 },
+    { subject: "WWnd Valid L1", "No Data": 0 },
+    { subject: "Total Training Time", "No Data": 0 },
+  ];
+
   const radarData = dataSets.flatMap(({ name, data }) => [
     { subject: "Train RMSE", name, value: data.train_rmse },
     { subject: "Train NRMSE", name, value: data.train_nrmse },
@@ -99,10 +122,13 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     [],
   );
 
+  // Use default data if no radarDataFormatted is present
+  const dataToDisplay = radarDataFormatted.length > 0 ? radarDataFormatted : defaultRadarData;
+
   return (
     <div style={{ width: "100%", height: 500 }}>
       <ResponsiveContainer>
-        <RadarChart outerRadius={200} data={radarDataFormatted}>
+        <RadarChart outerRadius={200} data={dataToDisplay}>
           <PolarGrid />
           <PolarAngleAxis dataKey="subject" />
           <PolarRadiusAxis angle={30} domain={[0, 100]} />

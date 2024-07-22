@@ -10,9 +10,10 @@ import {
   ResponsiveContainer,
   TooltipProps,
 } from "recharts";
+import { colorMap } from "../colors"; // Adjust the import path as needed
 
 interface Props {
-  chartData: { epoch: number; Train_RMSE: number; Valid_RMSE: number }[];
+  chartData: { epoch: number; [key: string]: number }[];
 }
 
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
@@ -24,21 +25,20 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
     return (
       <div className="p-4 bg-slate-900 flex flex-col gap-4 rounded-md">
         <p className="text-medium text-lg">{`Epoch: ${label}`}</p>
-        <p className="text-sm text-blue-400">
-          Train Loss:
-          <span className="ml-2">{payload[0].value}</span>
-        </p>
-        <p className="text-sm text-indigo-400">
-          Val Loss:
-          <span className="ml-2">{payload[1].value}</span>
-        </p>
+        {payload.map((entry, index) => (
+          <p key={index} className="text-sm" style={{ color: entry.color }}>
+            {entry.name}:<span className="ml-2">{entry.value}</span>
+          </p>
+        ))}
       </div>
     );
   }
   return null;
 };
 
-const LineChart: React.FC<Props> = ({ chartData }) => {
+const MetricsChart: React.FC<Props> = ({ chartData }) => {
+  const keys = Object.keys(chartData[0] || {}).filter((key) => key !== "epoch");
+
   return (
     <div style={{ width: "100%", height: 400 }}>
       <ResponsiveContainer>
@@ -46,32 +46,28 @@ const LineChart: React.FC<Props> = ({ chartData }) => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="epoch" />
           <YAxis
-            scale="log" // Use log scale
-            domain={[0.01, 1]} // Fixed domain range for the log scale
-            ticks={[0.01, 0.1, 1]} // Fixed tick values
-            tickFormatter={(tick) => tick.toExponential(1)} // Format ticks in exponential notation
-            tickCount={3} // Number of ticks
+            scale="log"
+            domain={[0.01, 1]}
+            ticks={[0.01, 0.1, 1]}
+            tickFormatter={(tick) => tick.toExponential(1)}
+            tickCount={3}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <Line
-            type="monotone"
-            dataKey="Train_RMSE"
-            stroke="#8884d8"
-            dot={false}
-            animationDuration={6500}
-          />
-          <Line
-            type="monotone"
-            dataKey="Valid_RMSE"
-            stroke="#82ca9d"
-            dot={false}
-            animationDuration={6500}
-          />
+          {keys.map((key, index) => (
+            <Line
+              key={index}
+              type="monotone"
+              dataKey={key}
+              stroke={colorMap[key] || "#000000"}
+              dot={false}
+              animationDuration={6500}
+            />
+          ))}
         </RechartsLineChart>
       </ResponsiveContainer>
     </div>
   );
 };
 
-export default LineChart;
+export default MetricsChart;

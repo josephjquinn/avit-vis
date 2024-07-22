@@ -8,8 +8,10 @@ import {
   Tooltip,
   ResponsiveContainer,
   TooltipProps,
+  Legend,
 } from "recharts";
 import { NormalizationData } from "../types"; // Adjust the import path as needed
+import { colorMap } from "../colors"; // Adjust the import path as needed
 
 interface RadarChartComponentProps {
   dataSets: { name: string; data: NormalizationData }[]; // Array of datasets
@@ -22,20 +24,36 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
   label,
 }) => {
   if (active && payload && payload.length) {
+    // Organize tooltip data by case
+    const tooltipData = payload.reduce(
+      (acc: { [key: string]: number }, item) => {
+        acc[item.name] = item.value;
+        return acc;
+      },
+      {},
+    );
+
     return (
       <div className="p-4 bg-slate-900 flex flex-col gap-4 rounded-md">
         <p className="text-medium text-lg">{`${label}`}</p>
-        <p className="text-sm text-blue-400">
-          Value:
-          <span className="ml-2">{payload[0].value.toFixed(2)}</span>
-        </p>
+        {Object.entries(tooltipData).map(([caseName, value]) => (
+          <p
+            key={caseName}
+            className="text-sm"
+            style={{ color: colorMap[caseName] }}
+          >
+            {caseName}:<span className="ml-2">{value.toFixed(2)}</span>
+          </p>
+        ))}
       </div>
     );
   }
   return null;
 };
 
-const RadarChartComponent: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
+const RadarChartComponent: React.FC<RadarChartComponentProps> = ({
+  dataSets,
+}) => {
   // Convert NormalizationData to format suitable for RadarChart
   const radarData = dataSets.flatMap(({ name, data }) => [
     { subject: "Train RMSE", name, value: data.train_rmse },
@@ -59,17 +77,9 @@ const RadarChartComponent: React.FC<RadarChartComponentProps> = ({ dataSets }) =
     { subject: "Total Training Time", name, value: data.train_time },
   ]);
 
-  // Define a color map for different cases
-  const colorMap: { [key: string]: string } = {
-    "ti-64-8": "#8884d8",
-    "Case2": "#82ca9d",
-    "Case3": "#ffc658",
-    // Add more colors as needed
-  };
-
   // Create a radar data structure for each subject
   const radarDataFormatted = radarData.reduce((acc, curr) => {
-    const existing = acc.find(d => d.subject === curr.subject);
+    const existing = acc.find((d) => d.subject === curr.subject);
     if (existing) {
       existing[curr.name] = curr.value;
     } else {
@@ -96,6 +106,7 @@ const RadarChartComponent: React.FC<RadarChartComponentProps> = ({ dataSets }) =
             />
           ))}
           <Tooltip content={<CustomTooltip />} />
+          <Legend />
         </RadarChart>
       </ResponsiveContainer>
     </div>

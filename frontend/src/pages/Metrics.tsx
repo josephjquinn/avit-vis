@@ -10,8 +10,6 @@ const Metrics: React.FC = () => {
   const [caseName, setCaseName] = useState<string>("ti-64-8");
   const [caseNames, setCaseNames] = useState<string[]>([]);
   const [selectedVars, setSelectedVars] = useState<string[]>(["Train_RMSE", "Valid_RMSE"]);
-  const [previousSelectedVars, setPreviousSelectedVars] = useState<string[]>(["Train_RMSE", "Valid_RMSE"]);
-  const [animateNewLines, setAnimateNewLines] = useState<Set<string>>(new Set());
 
   const variables = [
     { key: "Train_RMSE", color: "#8884d8" },
@@ -35,7 +33,6 @@ const Metrics: React.FC = () => {
   ];
 
   useEffect(() => {
-    // Fetch case names on component mount
     const fetchCaseNames = async () => {
       try {
         const names = await getCaseNames();
@@ -49,7 +46,6 @@ const Metrics: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch metrics and normalization data when caseName changes
     const fetchData = async () => {
       try {
         const metrics = await getMetricsData(caseName);
@@ -64,17 +60,6 @@ const Metrics: React.FC = () => {
 
     fetchData();
   }, [caseName]);
-
-  useEffect(() => {
-    // Determine which lines are newly selected or reselected
-    const newlySelectedVars = selectedVars.filter(
-      (key) => !previousSelectedVars.includes(key),
-    );
-    setAnimateNewLines(new Set(newlySelectedVars));
-
-    // Update previous selected variables
-    setPreviousSelectedVars(selectedVars);
-  }, [selectedVars]);
 
   const handleCaseChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCaseName(event.target.value);
@@ -96,7 +81,6 @@ const Metrics: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  // Prepare data for the line chart
   const chartData = metricsData.epoch.map((epoch, index) => ({
     epoch,
     Train_RMSE: metricsData.train_rmse[index],
@@ -152,7 +136,7 @@ const Metrics: React.FC = () => {
         ))}
       </div>
 
-      <MetricsChart chartData={chartData} selectedVars={selectedVars} animateNewLines={animateNewLines} />
+      <MetricsChart chartData={chartData} selectedVars={selectedVars} />
     </div>
   );
 };

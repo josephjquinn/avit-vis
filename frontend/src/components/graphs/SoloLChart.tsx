@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   LineChart as RechartsLineChart,
   Line,
@@ -33,7 +33,6 @@ interface Props {
     WWnd_Valid_L1?: number;
   }[];
   selectedVars: string[];
-  animateNewLines: Set<string>;
 }
 
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
@@ -47,7 +46,8 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
         <p className="text-lg">{`Epoch: ${label}`}</p>
         {payload.map((entry, index) => (
           <p key={index} className="text-sm">
-            <span style={{ color: entry.color }}>{entry.name}</span>: {entry.value}
+            <span style={{ color: entry.color }}>{entry.name}</span>:{" "}
+            {entry.value}
           </p>
         ))}
       </div>
@@ -57,7 +57,25 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
   return null;
 };
 
-const MetricsChart: React.FC<Props> = ({ chartData, selectedVars, animateNewLines }) => {
+const MetricsChart: React.FC<Props> = ({ chartData, selectedVars }) => {
+  const [animatingVar, setAnimatingVar] = useState<string | null>(null);
+  const [animationTriggered, setAnimationTriggered] = useState<boolean>(false);
+  const previousSelectedVarRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (selectedVars.length > 0) {
+      const lastSelectedVar = selectedVars[selectedVars.length - 1];
+      if (lastSelectedVar !== previousSelectedVarRef.current) {
+        previousSelectedVarRef.current = lastSelectedVar;
+        setAnimationTriggered(false); // Reset the animation trigger
+        setTimeout(() => {
+          setAnimatingVar(lastSelectedVar);
+          setAnimationTriggered(true); // Trigger the animation
+        }, 100); // Add a slight delay before starting animation
+      }
+    }
+  }, [selectedVars]);
+
   const variables = [
     { key: "Train_RMSE", color: "#8884d8" },
     { key: "Train_NRMSE", color: "#82ca9d" },
@@ -87,20 +105,17 @@ const MetricsChart: React.FC<Props> = ({ chartData, selectedVars, animateNewLine
         <Tooltip content={<CustomTooltip />} />
         <Legend />
 
-        {variables.map(
-          ({ key, color }) =>
-            selectedVars.includes(key) && (
-              <Line
-                key={key}
-                type="monotone"
-                dataKey={key}
-                stroke={color}
-                dot={false}
-                activeDot={{ r: 8 }}
-                isAnimationActive={animateNewLines.has(key)}
-                animationDuration={animateNewLines.has(key) ? 500 : 0}
-              />
-            ),
+        {variables.map(({ key, color }) =>
+          selectedVars.includes(key) ? (
+            <Line
+              key={key}
+              type="monotone"
+              dataKey={key}
+              stroke={color}
+              dot={false}
+              activeDot={{ r: 8 }}
+            />
+          ) : null,
         )}
       </RechartsLineChart>
     </ResponsiveContainer>

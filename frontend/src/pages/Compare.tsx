@@ -148,7 +148,6 @@ const Compare: React.FC = () => {
     // Ensure only one group is active at a time
     setActiveGroup((prev) => (prev === group ? null : group));
   };
-
   const handleSelectBatchSize = (batchSize: number) => {
     const filteredCases = caseNames.filter(
       (name) => extractBatchSize(name) === batchSize,
@@ -247,26 +246,52 @@ const Compare: React.FC = () => {
   const defaultRadarData = [{ name: "No Data", data: {} as NormalizationData }];
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h2>Select Cases to Compare</h2>
-      <button
-        onClick={() => handleSelectCases("ti")}
-        className={`button ${activeGroup === "ti" ? "group-btn-success" : "group-btn"}`}
-      >
-        Select All "ti" Cases
-      </button>
-      <button
-        onClick={() => handleSelectCases("s")}
-        className={`button ${activeGroup === "s" ? "group-btn-success" : "group-btn"}`}
-      >
-        Select All "s" Cases
-      </button>
-      <button
-        onClick={() => handleSelectCases("b")}
-        className={`button ${activeGroup === "b" ? "group-btn-success" : "group-btn"}`}
-      >
-        Select All "b" Cases
-      </button>
+      <div className="cat-btns-container">
+        <button
+          onClick={() => handleSelectCases("ti")}
+          className={`button ${activeGroup === "ti" ? "group-btn-success" : "group-btn"}`}
+        >
+          Select All "ti" Cases
+        </button>
+        <button
+          onClick={() => handleSelectCases("s")}
+          className={`button ${activeGroup === "s" ? "group-btn-success" : "group-btn"}`}
+        >
+          Select All "s" Cases
+        </button>
+        <button
+          onClick={() => handleSelectCases("b")}
+          className={`button ${activeGroup === "b" ? "group-btn-success" : "group-btn"}`}
+        >
+          Select All "b" Cases
+        </button>
+      </div>
+      <h3>Patch Sizes</h3>
+      <div className="cat-btns-container">
+        {allPatchSizes.map((size) => (
+          <button
+            key={size}
+            onClick={() => handleSelectPatchSize(size)}
+            className={`button ${selectedPatchSizes.has(size) ? "case-btn-success" : "case-btn"}`}
+          >
+            Patch Size {size}
+          </button>
+        ))}
+      </div>
+      <h3>Batch Sizes</h3>
+      <div className="cat-btns-container">
+        {allBatchSizes.map((size) => (
+          <button
+            key={size}
+            onClick={() => handleSelectBatchSize(size)}
+            className={`button ${selectedBatchSizes.has(size) ? "case-btn-success" : "case-btn"}`}
+          >
+            Batch Size {size}
+          </button>
+        ))}
+      </div>
       <div className="button-group-container">
         <div className="button-group">
           <h3>TI Cases</h3>
@@ -301,32 +326,6 @@ const Compare: React.FC = () => {
               className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
             >
               {name}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="button-group-container">
-        <div className="button-group">
-          <h3>Batch Sizes</h3>
-          {allBatchSizes.map((size) => (
-            <button
-              key={size}
-              onClick={() => handleSelectBatchSize(size)}
-              className={`button ${selectedBatchSizes.has(size) ? "case-btn-success" : "case-btn"}`}
-            >
-              Batch Size {size}
-            </button>
-          ))}
-        </div>
-        <div className="button-group">
-          <h3>Patch Sizes</h3>
-          {allPatchSizes.map((size) => (
-            <button
-              key={size}
-              onClick={() => handleSelectPatchSize(size)}
-              className={`button ${selectedPatchSizes.has(size) ? "case-btn-success" : "case-btn"}`}
-            >
-              Patch Size {size}
             </button>
           ))}
         </div>

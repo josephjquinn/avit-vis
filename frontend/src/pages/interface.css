@@ -1,6 +1,10 @@
 /* interface.css */
 
 /* Layout for the button groups */
+.cat-btns-container{
+  display: flex;
+  width: 50%;
+}
 .button-group-container {
   display: flex;
   gap: 1rem;

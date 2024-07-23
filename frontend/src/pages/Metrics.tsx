@@ -9,6 +9,30 @@ const Metrics: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [caseName, setCaseName] = useState<string>("ti-64-8");
   const [caseNames, setCaseNames] = useState<string[]>([]);
+  const [selectedVars, setSelectedVars] = useState<string[]>(["Train_RMSE", "Valid_RMSE"]);
+  const [previousSelectedVars, setPreviousSelectedVars] = useState<string[]>(["Train_RMSE", "Valid_RMSE"]);
+  const [animateNewLines, setAnimateNewLines] = useState<Set<string>>(new Set());
+
+  const variables = [
+    { key: "Train_RMSE", color: "#8884d8" },
+    { key: "Train_NRMSE", color: "#82ca9d" },
+    { key: "Train_L1", color: "#ffc658" },
+    { key: "Valid_NRMSE", color: "#ff7300" },
+    { key: "Valid_RMSE", color: "#00c49f" },
+    { key: "Valid_L1", color: "#ffbb28" },
+    { key: "Dens_Valid_NRMSE", color: "#d0ed57" },
+    { key: "Dens_Valid_RMSE", color: "#a4de6c" },
+    { key: "Dens_Valid_L1", color: "#82ca9d" },
+    { key: "PTemp_Valid_NRMSE", color: "#8884d8" },
+    { key: "PTemp_Valid_RMSE", color: "#ffc658" },
+    { key: "PTemp_Valid_L1", color: "#ff7300" },
+    { key: "UWnd_Valid_NRMSE", color: "#00c49f" },
+    { key: "UWnd_Valid_RMSE", color: "#ffbb28" },
+    { key: "UWnd_Valid_L1", color: "#d0ed57" },
+    { key: "WWnd_Valid_NRMSE", color: "#a4de6c" },
+    { key: "WWnd_Valid_RMSE", color: "#8884d8" },
+    { key: "WWnd_Valid_L1", color: "#82ca9d" },
+  ];
 
   useEffect(() => {
     // Fetch case names on component mount
@@ -41,8 +65,27 @@ const Metrics: React.FC = () => {
     fetchData();
   }, [caseName]);
 
+  useEffect(() => {
+    // Determine which lines are newly selected or reselected
+    const newlySelectedVars = selectedVars.filter(
+      (key) => !previousSelectedVars.includes(key),
+    );
+    setAnimateNewLines(new Set(newlySelectedVars));
+
+    // Update previous selected variables
+    setPreviousSelectedVars(selectedVars);
+  }, [selectedVars]);
+
   const handleCaseChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCaseName(event.target.value);
+  };
+
+  const handleButtonClick = (variableKey: string) => {
+    setSelectedVars((prev) =>
+      prev.includes(variableKey)
+        ? prev.filter((key) => key !== variableKey)
+        : [...prev, variableKey],
+    );
   };
 
   if (error) {
@@ -88,7 +131,28 @@ const Metrics: React.FC = () => {
         ))}
       </select>
 
-      <MetricsChart chartData={chartData} />
+      <div>
+        <h3>Select Variables to Display:</h3>
+        {variables.map(({ key, color }) => (
+          <button
+            key={key}
+            onClick={() => handleButtonClick(key)}
+            style={{
+              backgroundColor: selectedVars.includes(key) ? color : "#ccc",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+              padding: "8px 12px",
+              margin: "4px",
+              cursor: "pointer",
+            }}
+          >
+            {key}
+          </button>
+        ))}
+      </div>
+
+      <MetricsChart chartData={chartData} selectedVars={selectedVars} animateNewLines={animateNewLines} />
     </div>
   );
 };

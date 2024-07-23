@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   LineChart as RechartsLineChart,
   Line,
@@ -32,6 +32,8 @@ interface Props {
     WWnd_Valid_RMSE?: number;
     WWnd_Valid_L1?: number;
   }[];
+  selectedVars: string[];
+  animateNewLines: Set<string>;
 }
 
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
@@ -45,31 +47,17 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
         <p className="text-lg">{`Epoch: ${label}`}</p>
         {payload.map((entry, index) => (
           <p key={index} className="text-sm">
-            <span style={{ color: entry.stroke }} className="font-bold">
-              {entry.name}:
-            </span>{" "}
-            <span>{entry.value}</span>
+            <span style={{ color: entry.color }}>{entry.name}</span>: {entry.value}
           </p>
         ))}
       </div>
     );
   }
+
   return null;
 };
 
-const MetricsChart: React.FC<Props> = ({ chartData }) => {
-  const [selectedVars, setSelectedVars] = useState<string[]>([
-    "Train_RMSE",
-    "Valid_RMSE",
-  ]);
-  const [previousSelectedVars, setPreviousSelectedVars] = useState<string[]>([
-    "Train_RMSE",
-    "Valid_RMSE",
-  ]);
-  const [animateNewLines, setAnimateNewLines] = useState<Set<string>>(
-    new Set(),
-  );
-
+const MetricsChart: React.FC<Props> = ({ chartData, selectedVars, animateNewLines }) => {
   const variables = [
     { key: "Train_RMSE", color: "#8884d8" },
     { key: "Train_NRMSE", color: "#82ca9d" },
@@ -91,76 +79,31 @@ const MetricsChart: React.FC<Props> = ({ chartData }) => {
     { key: "WWnd_Valid_L1", color: "#82ca9d" },
   ];
 
-  useEffect(() => {
-    // Determine which lines are newly selected or reselected
-    const newlySelectedVars = selectedVars.filter(
-      (key) => !previousSelectedVars.includes(key),
-    );
-    setAnimateNewLines(new Set(newlySelectedVars));
-
-    // Update previous selected variables
-    setPreviousSelectedVars(selectedVars);
-  }, [selectedVars]);
-
-  const handleButtonClick = (variableKey: string) => {
-    setSelectedVars((prev) =>
-      prev.includes(variableKey)
-        ? prev.filter((key) => key !== variableKey)
-        : [...prev, variableKey],
-    );
-  };
-
-  // Debugging: log chartData and selectedVars
-  console.log("Chart Data:", chartData);
-  console.log("Selected Vars:", selectedVars);
-  console.log("Animate New Lines:", Array.from(animateNewLines));
-
   return (
-    <div>
-      <div>
-        <h3>Select Variables to Display:</h3>
-        {variables.map(({ key, color }) => (
-          <button
-            key={key}
-            onClick={() => handleButtonClick(key)}
-            style={{
-              backgroundColor: selectedVars.includes(key) ? color : "#ccc",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              padding: "8px 12px",
-              margin: "4px",
-              cursor: "pointer",
-            }}
-          >
-            {key}
-          </button>
-        ))}
-      </div>
+    <ResponsiveContainer width="100%" height={400}>
+      <RechartsLineChart data={chartData}>
+        <XAxis dataKey="epoch" />
+        <YAxis />
+        <Tooltip content={<CustomTooltip />} />
+        <Legend />
 
-      <ResponsiveContainer width="100%" height={500}>
-        <RechartsLineChart data={chartData}>
-          <XAxis dataKey="epoch" />
-          <YAxis scale="log" domain={["auto", "auto"]} />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend />
-          {variables
-            .filter(({ key }) => selectedVars.includes(key))
-            .map(({ key, color }) => (
+        {variables.map(
+          ({ key, color }) =>
+            selectedVars.includes(key) && (
               <Line
                 key={key}
                 type="monotone"
                 dataKey={key}
                 stroke={color}
                 dot={false}
-                strokeWidth={2}
-                animationDuration={10000} // Animate only newly selected lines
-                isAnimationActive={true} // Ensure animation is active
+                activeDot={{ r: 8 }}
+                isAnimationActive={animateNewLines.has(key)}
+                animationDuration={animateNewLines.has(key) ? 500 : 0}
               />
-            ))}
-        </RechartsLineChart>
-      </ResponsiveContainer>
-    </div>
+            ),
+        )}
+      </RechartsLineChart>
+    </ResponsiveContainer>
   );
 };
 

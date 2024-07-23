@@ -4,6 +4,7 @@ import About from "./pages/About";
 import NavBar from "./components/Navbar/Navbar";
 import Metrics from "./pages/Metrics";
 import Compare from "./pages/Compare";
+import Visualize from "./pages/Visualize";
 import "./App.css";
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/metrics" element={<Metrics />} />
         <Route path="/about" element={<About />} />
         <Route path="/compare" element={<Compare />} />
+        <Route path="/visualize" element={<Visualize />} />
       </Routes>
     </BrowserRouter>
   );

@@ -114,6 +114,26 @@ const Compare: React.FC = () => {
     }
   }, [caseNames]);
 
+  const handleClearAll = () => {
+    // Clear all selected cases
+    setSelectedCases(new Set());
+
+    // Reset group selection states
+    setSelectedGroupState(() => {
+      const resetGroupState = {};
+      for (const group of Object.keys(selectedGroupState)) {
+        resetGroupState[group] = false;
+      }
+      return resetGroupState;
+    });
+
+    // Reset batch size and patch size selection states
+    setSelectedBatchSizes(new Set());
+    setSelectedPatchSizes(new Set());
+
+    // Optionally reset the active group (if you have such a state)
+    setActiveGroup(null);
+  };
   const handleButtonClick = (caseName: string) => {
     setSelectedCases((prev) => {
       const newSet = new Set(prev);
@@ -292,6 +312,8 @@ const Compare: React.FC = () => {
           </button>
         ))}
       </div>
+
+      <button className="button case-btn" onClick={handleClearAll}>Clear All</button>
       <div className="button-group-container">
         <div className="button-group">
           <h3>TI Cases</h3>

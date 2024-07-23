@@ -7,7 +7,7 @@ import {
   getCaseNames,
 } from "../lib/services";
 import { NormalizationData } from "../types";
-import './interface.css';
+import "./interface.css";
 
 interface MetricsData {
   epoch: number[];
@@ -23,8 +23,17 @@ const extractBatchSize = (caseName: string): number => {
   return match ? parseInt(match[1], 10) : 0;
 };
 
-const sortCasesByBatchSize = (cases: string[]): string[] => {
-  return cases.sort((a, b) => extractBatchSize(a) - extractBatchSize(b));
+const extractPatchSize = (caseName: string): number => {
+  const match = caseName.match(/-(\d+)$/);
+  return match ? parseInt(match[1], 10) : 0;
+};
+
+const sortCasesByBatchAndPatchSize = (cases: string[]): string[] => {
+  return cases.sort((a, b) => {
+    const batchSizeComparison = extractBatchSize(a) - extractBatchSize(b);
+    if (batchSizeComparison !== 0) return batchSizeComparison;
+    return extractPatchSize(b) - extractPatchSize(a); // Reverse the order for patch size
+  });
 };
 
 const Compare: React.FC = () => {
@@ -34,12 +43,28 @@ const Compare: React.FC = () => {
   }>({});
   const [caseNames, setCaseNames] = useState<string[]>([]);
   const [selectedCases, setSelectedCases] = useState<Set<string>>(new Set());
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedGroupState, setSelectedGroupState] = useState<{
+    [key: string]: boolean;
+  }>({
+    ti: false,
+    s: false,
+    b: false,
+  });
+
+  // Track selected states for batch sizes and patch sizes
+  const [selectedBatchSizes, setSelectedBatchSizes] = useState<Set<number>>(
+    new Set(),
+  );
+  const [selectedPatchSizes, setSelectedPatchSizes] = useState<Set<number>>(
+    new Set(),
+  );
 
   useEffect(() => {
     const fetchCaseNames = async () => {
       try {
-        const names = getCaseNames();
+        const names = await getCaseNames();
         setCaseNames(names);
       } catch (err) {
         setError(
@@ -101,28 +126,93 @@ const Compare: React.FC = () => {
     });
   };
 
-  const handleSelectTiCases = () => {
-    const tiCases = caseNames.filter((name) => name.includes("ti"));
-    setSelectedCases(new Set(tiCases));
+  const handleSelectCases = (group: string) => {
+    const filteredCases = caseNames.filter((name) => name.includes(group));
+    const isCurrentlySelected = selectedGroupState[group];
+
+    setSelectedCases((prev) => {
+      const newSet = new Set(prev);
+      if (isCurrentlySelected) {
+        filteredCases.forEach((name) => newSet.delete(name));
+      } else {
+        filteredCases.forEach((name) => newSet.add(name));
+      }
+      return newSet;
+    });
+
+    setSelectedGroupState((prevState) => ({
+      ...prevState,
+      [group]: !prevState[group],
+    }));
+
+    // Ensure only one group is active at a time
+    setActiveGroup((prev) => (prev === group ? null : group));
   };
 
-  const handleSelectSCases = () => {
-    const sCases = caseNames.filter((name) => name.includes("s"));
-    setSelectedCases(new Set(sCases));
+  const handleSelectBatchSize = (batchSize: number) => {
+    const filteredCases = caseNames.filter(
+      (name) => extractBatchSize(name) === batchSize,
+    );
+    setSelectedBatchSizes((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(batchSize)) {
+        newSet.delete(batchSize);
+      } else {
+        newSet.add(batchSize);
+      }
+      return newSet;
+    });
+    setSelectedCases((prev) => {
+      const newSet = new Set(prev);
+      if (selectedBatchSizes.has(batchSize)) {
+        filteredCases.forEach((name) => newSet.delete(name));
+      } else {
+        filteredCases.forEach((name) => newSet.add(name));
+      }
+      return newSet;
+    });
   };
 
-  const handleSelectBCases = () => {
-    const bCases = caseNames.filter((name) => name.includes("b"));
-    setSelectedCases(new Set(bCases));
+  const handleSelectPatchSize = (patchSize: number) => {
+    const filteredCases = caseNames.filter(
+      (name) => extractPatchSize(name) === patchSize,
+    );
+    setSelectedPatchSizes((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(patchSize)) {
+        newSet.delete(patchSize);
+      } else {
+        newSet.add(patchSize);
+      }
+      return newSet;
+    });
+    setSelectedCases((prev) => {
+      const newSet = new Set(prev);
+      if (selectedPatchSizes.has(patchSize)) {
+        filteredCases.forEach((name) => newSet.delete(name));
+      } else {
+        filteredCases.forEach((name) => newSet.add(name));
+      }
+      return newSet;
+    });
   };
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  const tiCases = sortCasesByBatchSize(caseNames.filter(name => name.includes("ti")));
-  const sCases = sortCasesByBatchSize(caseNames.filter(name => name.includes("s")));
-  const bCases = sortCasesByBatchSize(caseNames.filter(name => name.includes("b")));
+  const tiCases = sortCasesByBatchAndPatchSize(
+    caseNames.filter((name) => name.includes("ti")),
+  );
+  const sCases = sortCasesByBatchAndPatchSize(
+    caseNames.filter((name) => name.includes("s")),
+  );
+  const bCases = sortCasesByBatchAndPatchSize(
+    caseNames.filter((name) => name.includes("b")),
+  );
+
+  const allBatchSizes = Array.from(new Set(caseNames.map(extractBatchSize)));
+  const allPatchSizes = Array.from(new Set(caseNames.map(extractPatchSize)));
 
   const selectedData = Array.from(selectedCases).flatMap((caseName) => {
     const caseData = metricsDataState[caseName];
@@ -159,23 +249,32 @@ const Compare: React.FC = () => {
   return (
     <div>
       <h2>Select Cases to Compare</h2>
-      <button onClick={handleSelectTiCases} className="button btn-primary mb-4">
+      <button
+        onClick={() => handleSelectCases("ti")}
+        className={`button ${activeGroup === "ti" ? "group-btn-success" : "group-btn"}`}
+      >
         Select All "ti" Cases
       </button>
-      <button onClick={handleSelectSCases} className="button btn-primary mb-4">
+      <button
+        onClick={() => handleSelectCases("s")}
+        className={`button ${activeGroup === "s" ? "group-btn-success" : "group-btn"}`}
+      >
         Select All "s" Cases
       </button>
-      <button onClick={handleSelectBCases} className="button btn-primary mb-4">
+      <button
+        onClick={() => handleSelectCases("b")}
+        className={`button ${activeGroup === "b" ? "group-btn-success" : "group-btn"}`}
+      >
         Select All "b" Cases
       </button>
       <div className="button-group-container">
         <div className="button-group">
           <h3>TI Cases</h3>
-          {tiCases.map(name => (
+          {tiCases.map((name) => (
             <button
               key={name}
               onClick={() => handleButtonClick(name)}
-              className={`button ${selectedCases.has(name) ? 'btn-success' : 'btn-outline-secondary'}`}
+              className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
             >
               {name}
             </button>
@@ -183,11 +282,11 @@ const Compare: React.FC = () => {
         </div>
         <div className="button-group">
           <h3>S Cases</h3>
-          {sCases.map(name => (
+          {sCases.map((name) => (
             <button
               key={name}
               onClick={() => handleButtonClick(name)}
-              className={`button ${selectedCases.has(name) ? 'btn-success' : 'btn-outline-secondary'}`}
+              className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
             >
               {name}
             </button>
@@ -195,13 +294,39 @@ const Compare: React.FC = () => {
         </div>
         <div className="button-group">
           <h3>B Cases</h3>
-          {bCases.map(name => (
+          {bCases.map((name) => (
             <button
               key={name}
               onClick={() => handleButtonClick(name)}
-              className={`button ${selectedCases.has(name) ? 'btn-success' : 'btn-outline-secondary'}`}
+              className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
             >
               {name}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="button-group-container">
+        <div className="button-group">
+          <h3>Batch Sizes</h3>
+          {allBatchSizes.map((size) => (
+            <button
+              key={size}
+              onClick={() => handleSelectBatchSize(size)}
+              className={`button ${selectedBatchSizes.has(size) ? "case-btn-success" : "case-btn"}`}
+            >
+              Batch Size {size}
+            </button>
+          ))}
+        </div>
+        <div className="button-group">
+          <h3>Patch Sizes</h3>
+          {allPatchSizes.map((size) => (
+            <button
+              key={size}
+              onClick={() => handleSelectPatchSize(size)}
+              className={`button ${selectedPatchSizes.has(size) ? "case-btn-success" : "case-btn"}`}
+            >
+              Patch Size {size}
             </button>
           ))}
         </div>
@@ -211,11 +336,7 @@ const Compare: React.FC = () => {
           chartData={chartData.length > 0 ? chartData : [{ epoch: 0 }]}
         />
         <RChart
-          dataSets={
-            radarData.length > 0
-              ? radarData
-              : defaultRadarData
-          }
+          dataSets={radarData.length > 0 ? radarData : defaultRadarData}
         />
       </div>
     </div>

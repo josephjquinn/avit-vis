@@ -3,7 +3,13 @@
 /* Layout for the button groups */
 .cat-btns-container{
   display: flex;
-  width: 50%;
+  gap: 10px;
+
+}
+.cat-label{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .button-group-container {
   display: flex;
@@ -61,7 +67,7 @@
 }
 
 .button.group-btn-success:hover {
-  background-color: #218838;
+  background-color: darkcyan;
 }
 
 /*Case Buttons*/

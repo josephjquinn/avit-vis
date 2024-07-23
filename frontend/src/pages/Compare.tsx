@@ -268,6 +268,10 @@ const Compare: React.FC = () => {
   return (
     <div style={{ padding: "20px" }}>
       <h2>Select Cases to Compare</h2>
+
+      <div className="cat-label">
+        <h3>Model Sizes</h3>
+      </div>
       <div className="cat-btns-container">
         <button
           onClick={() => handleSelectCases("ti")}
@@ -288,32 +292,38 @@ const Compare: React.FC = () => {
           Select All "b" Cases
         </button>
       </div>
-      <h3>Patch Sizes</h3>
+      <div className="cat-label">
+        <h3>Patch Sizes</h3>
+      </div>
       <div className="cat-btns-container">
         {allPatchSizes.map((size) => (
           <button
             key={size}
             onClick={() => handleSelectPatchSize(size)}
-            className={`button ${selectedPatchSizes.has(size) ? "case-btn-success" : "case-btn"}`}
+            className={`button ${selectedPatchSizes.has(size) ? "group-btn-success" : "group-btn"}`}
           >
             Patch Size {size}
           </button>
         ))}
       </div>
-      <h3>Batch Sizes</h3>
+      <div className="cat-label">
+        <h3>Batch Sizes</h3>
+      </div>
       <div className="cat-btns-container">
         {allBatchSizes.map((size) => (
           <button
             key={size}
             onClick={() => handleSelectBatchSize(size)}
-            className={`button ${selectedBatchSizes.has(size) ? "case-btn-success" : "case-btn"}`}
+            className={`button ${selectedBatchSizes.has(size) ? "group-btn-success" : "group-btn"}`}
           >
             Batch Size {size}
           </button>
         ))}
       </div>
 
-      <button className="button case-btn" onClick={handleClearAll}>Clear All</button>
+      <button className="button case-btn" onClick={handleClearAll}>
+        Clear All
+      </button>
       <div className="button-group-container">
         <div className="button-group">
           <h3>TI Cases</h3>

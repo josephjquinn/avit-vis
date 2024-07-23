@@ -20,7 +20,7 @@
   text-align: center;
 }
 
-.button-group {
+.button-container .button-group {
   display: flex;
   flex-direction: column;
   gap: 10px;

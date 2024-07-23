@@ -1,34 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { MetricsData, NormalizationData } from "../types";
-import SoloLchart from "../components/graphs/SoloLChart";
-import {
-  getMetricsData,
-  getCaseNames,
-  getNormalizationData,
-} from "../lib/services";
+import MetricsChart from "../components/graphs/SoloLChart";
+import { getMetricsData, getCaseNames, getNormalizationData } from "../lib/services";
 
 const Metrics: React.FC = () => {
-  const [metricsDataState, setMetricsDataState] = useState<MetricsData | null>(
-    null,
-  );
-  const [normalizationDataState, setNormalizationDataState] =
-    useState<NormalizationData | null>(null); // State for normalization data
+  const [metricsData, setMetricsData] = useState<MetricsData | null>(null);
+  const [normalizationData, setNormalizationData] = useState<NormalizationData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [caseName, setCaseName] = useState<string>("ti-64-8"); // Default case name
+  const [caseName, setCaseName] = useState<string>("ti-64-8");
   const [caseNames, setCaseNames] = useState<string[]>([]);
 
   useEffect(() => {
     // Fetch case names on component mount
-    const fetchCaseNames = () => {
+    const fetchCaseNames = async () => {
       try {
-        const names = getCaseNames();
+        const names = await getCaseNames();
         setCaseNames(names);
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unexpected error occurred while fetching case names");
-        }
+        setError("An error occurred while fetching case names");
       }
     };
 
@@ -36,20 +25,16 @@ const Metrics: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch metrics data and normalization data when caseName changes
+    // Fetch metrics and normalization data when caseName changes
     const fetchData = async () => {
       try {
-        const metricsData = getMetricsData(caseName);
-        setMetricsDataState(metricsData);
+        const metrics = await getMetricsData(caseName);
+        setMetricsData(metrics);
 
-        const normalizationData = await getNormalizationData(caseName); // Fetch normalization data
-        setNormalizationDataState(normalizationData);
+        const normalization = await getNormalizationData(caseName);
+        setNormalizationData(normalization);
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unexpected error occurred while fetching data");
-        }
+        setError("An error occurred while fetching data");
       }
     };
 
@@ -64,47 +49,36 @@ const Metrics: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  if (!metricsDataState || !normalizationDataState) {
+  if (!metricsData || !normalizationData) {
     return <div>Loading...</div>;
   }
 
   // Prepare data for the line chart
-  const chartData = metricsDataState.epoch.map((epoch, index) => ({
+  const chartData = metricsData.epoch.map((epoch, index) => ({
     epoch,
-    Train_RMSE: metricsDataState.train_rmse[index],
-    Valid_RMSE: metricsDataState.valid_rmse[index],
+    Train_RMSE: metricsData.train_rmse[index],
+    Valid_RMSE: metricsData.valid_rmse[index],
+    Train_NRMSE: metricsData.train_nrmse[index],
+    Train_L1: metricsData.train_l1[index],
+    Valid_NRMSE: metricsData.valid_nrmse[index],
+    Valid_L1: metricsData.valid_l1[index],
+    Dens_Valid_NRMSE: metricsData.dens_valid_nrmse[index],
+    Dens_Valid_RMSE: metricsData.dens_valid_rmse[index],
+    Dens_Valid_L1: metricsData.dens_valid_l1[index],
+    PTemp_Valid_NRMSE: metricsData.ptemp_valid_nrmse[index],
+    PTemp_Valid_RMSE: metricsData.ptemp_valid_rmse[index],
+    PTemp_Valid_L1: metricsData.ptemp_valid_l1[index],
+    UWnd_Valid_NRMSE: metricsData.uwnd_valid_nrmse[index],
+    UWnd_Valid_RMSE: metricsData.uwnd_valid_rmse[index],
+    UWnd_Valid_L1: metricsData.uwnd_valid_l1[index],
+    WWnd_Valid_NRMSE: metricsData.wwnd_valid_nrmse[index],
+    WWnd_Valid_RMSE: metricsData.wwnd_valid_rmse[index],
+    WWnd_Valid_L1: metricsData.wwnd_valid_l1[index],
   }));
-
-  const singleChartData = metricsDataState.epoch.map((epoch, index) => ({
-    epoch,
-    Train_RMSE: metricsDataState.train_rmse[index],
-    Train_NRMSE: metricsDataState.train_nrmse[index],
-    Train_L1: metricsDataState.train_l1[index],
-    Valid_NRMSE: metricsDataState.valid_nrmse[index],
-    Valid_RMSE: metricsDataState.valid_rmse[index],
-    Valid_L1: metricsDataState.valid_l1[index],
-    Dens_Valid_NRMSE: metricsDataState.dens_valid_nrmse[index],
-    Dens_Valid_RMSE: metricsDataState.dens_valid_rmse[index],
-    Dens_Valid_L1: metricsDataState.dens_valid_l1[index],
-    PTemp_Valid_NRMSE: metricsDataState.ptemp_valid_nrmse[index],
-    PTemp_Valid_RMSE: metricsDataState.ptemp_valid_rmse[index],
-    PTemp_Valid_L1: metricsDataState.ptemp_valid_l1[index],
-    UWnd_Valid_NRMSE: metricsDataState.uwnd_valid_nrmse[index],
-    UWnd_Valid_RMSE: metricsDataState.uwnd_valid_rmse[index],
-    UWnd_Valid_L1: metricsDataState.uwnd_valid_l1[index],
-    WWnd_Valid_NRMSE: metricsDataState.wwnd_valid_nrmse[index],
-    WWnd_Valid_RMSE: metricsDataState.wwnd_valid_rmse[index],
-    WWnd_Valid_L1: metricsDataState.wwnd_valid_l1[index],
-  }));
-
-  // Generate unique key based on chartData
-  const chartKey = JSON.stringify(chartData);
 
   return (
     <div>
       <h2>Metrics for Case: {caseName}</h2>
-
-      {/* Dropdown to select case name */}
       <label>Select Case Name:</label>
       <select value={caseName} onChange={handleCaseChange}>
         {caseNames.map((name) => (
@@ -114,8 +88,7 @@ const Metrics: React.FC = () => {
         ))}
       </select>
 
-      {/* Metrics Chart */}
-      <SoloLchart chartData={singleChartData} />
+      <MetricsChart chartData={chartData} />
     </div>
   );
 };

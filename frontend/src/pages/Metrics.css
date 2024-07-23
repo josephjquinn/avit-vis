@@ -37,6 +37,24 @@
   text-align: center;
 }
 
+.metrics-info-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.metrics-info-container h3 {
+  margin-top: 0;
+}
+
+.metrics-info-container p {
+  margin: 0;
+}
+.css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+  background-color: grey !important;
+  color: white !important;
+}
 @media (max-width: 1200px) {
   .button-container {
     grid-template-columns: repeat(3, 1fr);

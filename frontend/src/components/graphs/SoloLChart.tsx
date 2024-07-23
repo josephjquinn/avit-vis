@@ -113,7 +113,6 @@ const MetricsChart: React.FC<Props> = ({ chartData, selectedVars }) => {
               dataKey={key}
               stroke={color}
               dot={false}
-              activeDot={{ r: 8 }}
             />
           ) : null,
         )}

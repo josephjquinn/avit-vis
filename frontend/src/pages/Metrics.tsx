@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MetricsData, NormalizationData } from "../types";
 import MetricsChart from "../components/graphs/SoloLChart";
 import { getMetricsData, getCaseNames, getNormalizationData } from "../lib/services";
+import "./Metrics.css"; // Make sure to include this CSS file
 
 const Metrics: React.FC = () => {
   const [metricsData, setMetricsData] = useState<MetricsData | null>(null);
@@ -9,28 +10,10 @@ const Metrics: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [caseName, setCaseName] = useState<string>("ti-64-8");
   const [caseNames, setCaseNames] = useState<string[]>([]);
-  const [selectedVars, setSelectedVars] = useState<string[]>(["Train_RMSE", "Valid_RMSE"]);
-
-  const variables = [
-    { key: "Train_RMSE", color: "#8884d8" },
-    { key: "Train_NRMSE", color: "#82ca9d" },
-    { key: "Train_L1", color: "#ffc658" },
-    { key: "Valid_NRMSE", color: "#ff7300" },
-    { key: "Valid_RMSE", color: "#00c49f" },
-    { key: "Valid_L1", color: "#ffbb28" },
-    { key: "Dens_Valid_NRMSE", color: "#d0ed57" },
-    { key: "Dens_Valid_RMSE", color: "#a4de6c" },
-    { key: "Dens_Valid_L1", color: "#82ca9d" },
-    { key: "PTemp_Valid_NRMSE", color: "#8884d8" },
-    { key: "PTemp_Valid_RMSE", color: "#ffc658" },
-    { key: "PTemp_Valid_L1", color: "#ff7300" },
-    { key: "UWnd_Valid_NRMSE", color: "#00c49f" },
-    { key: "UWnd_Valid_RMSE", color: "#ffbb28" },
-    { key: "UWnd_Valid_L1", color: "#d0ed57" },
-    { key: "WWnd_Valid_NRMSE", color: "#a4de6c" },
-    { key: "WWnd_Valid_RMSE", color: "#8884d8" },
-    { key: "WWnd_Valid_L1", color: "#82ca9d" },
-  ];
+  const [selectedVars, setSelectedVars] = useState<string[]>([
+    "Train_RMSE",
+    "Valid_RMSE",
+  ]);
 
   useEffect(() => {
     const fetchCaseNames = async () => {
@@ -81,6 +64,7 @@ const Metrics: React.FC = () => {
     return <div>Loading...</div>;
   }
 
+  // Prepare data for the line chart
   const chartData = metricsData.epoch.map((epoch, index) => ({
     epoch,
     Train_RMSE: metricsData.train_rmse[index],
@@ -103,6 +87,39 @@ const Metrics: React.FC = () => {
     WWnd_Valid_L1: metricsData.wwnd_valid_l1[index],
   }));
 
+  const categories = {
+    Train: [
+      { key: "Train_RMSE", color: "#8884d8" },
+      { key: "Train_NRMSE", color: "#82ca9d" },
+      { key: "Train_L1", color: "#ffc658" },
+    ],
+    Valid: [
+      { key: "Valid_NRMSE", color: "#ff7300" },
+      { key: "Valid_RMSE", color: "#00c49f" },
+      { key: "Valid_L1", color: "#ffbb28" },
+    ],
+    Dens: [
+      { key: "Dens_Valid_NRMSE", color: "#d0ed57" },
+      { key: "Dens_Valid_RMSE", color: "#a4de6c" },
+      { key: "Dens_Valid_L1", color: "#82ca9d" },
+    ],
+    PTemp: [
+      { key: "PTemp_Valid_NRMSE", color: "#8884d8" },
+      { key: "PTemp_Valid_RMSE", color: "#ffc658" },
+      { key: "PTemp_Valid_L1", color: "#ff7300" },
+    ],
+    UWnd: [
+      { key: "UWnd_Valid_NRMSE", color: "#00c49f" },
+      { key: "UWnd_Valid_RMSE", color: "#ffbb28" },
+      { key: "UWnd_Valid_L1", color: "#d0ed57" },
+    ],
+    WWnd: [
+      { key: "WWnd_Valid_NRMSE", color: "#a4de6c" },
+      { key: "WWnd_Valid_RMSE", color: "#8884d8" },
+      { key: "WWnd_Valid_L1", color: "#82ca9d" },
+    ],
+  };
+
   return (
     <div>
       <h2>Metrics for Case: {caseName}</h2>
@@ -115,24 +132,26 @@ const Metrics: React.FC = () => {
         ))}
       </select>
 
-      <div>
-        <h3>Select Variables to Display:</h3>
-        {variables.map(({ key, color }) => (
-          <button
-            key={key}
-            onClick={() => handleButtonClick(key)}
-            style={{
-              backgroundColor: selectedVars.includes(key) ? color : "#ccc",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              padding: "8px 12px",
-              margin: "4px",
-              cursor: "pointer",
-            }}
-          >
-            {key}
-          </button>
+      <div className="button-container">
+        {Object.keys(categories).map((category) => (
+          <div key={category} className="category-group">
+            <h3>{category}</h3>
+            <div className="button-group">
+              {categories[category].map(({ key, color }) => (
+                <button
+                  key={key}
+                  onClick={() => handleButtonClick(key)}
+                  className={selectedVars.includes(key) ? "selected" : ""}
+                  style={{
+                    backgroundColor: selectedVars.includes(key) ? color : "#ccc",
+                    color: "#fff",
+                  }}
+                >
+                  {key}
+                </button>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
 

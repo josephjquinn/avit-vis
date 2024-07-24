@@ -96,7 +96,7 @@
 
 .time-step-controls {
   font-size: 16px;
-  width: 30%;
+  width: 20%;
 }
 
 /* Video Container */
@@ -137,9 +137,21 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 850px) {
   .video-container {
     grid-template-columns: 1fr; /* Change to 1 column on small screens */
     grid-template-rows: auto; /* Rows auto adjust based on content */
+  }
+  .time-step-controls {
+    width: 50%;
+  }
+}
+
+@media (max-width: 400px) {
+  .button.button.playback-btn {
+    font-size: 12px;
+  }
+  .video-container video {
+    width: 350px;
   }
 }

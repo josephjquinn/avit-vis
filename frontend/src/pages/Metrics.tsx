@@ -140,7 +140,7 @@ const Metrics: React.FC = () => {
       { key: "Valid_RMSE", color: "#00c49f" },
       { key: "Valid_L1", color: "#ffbb28" },
     ],
-    Dens: [
+    dens: [
       { key: "Dens_Valid_NRMSE", color: "#d0ed57" },
       { key: "Dens_Valid_RMSE", color: "#a4de6c" },
       { key: "Dens_Valid_L1", color: "#82ca9d" },
@@ -150,20 +150,26 @@ const Metrics: React.FC = () => {
       { key: "PTemp_Valid_RMSE", color: "#ffc658" },
       { key: "PTemp_Valid_L1", color: "#ff7300" },
     ],
-    UWnd: [
+    uwnd: [
       { key: "UWnd_Valid_NRMSE", color: "#00c49f" },
       { key: "UWnd_Valid_RMSE", color: "#ffbb28" },
       { key: "UWnd_Valid_L1", color: "#d0ed57" },
     ],
-    WWnd: [
+    wwnd: [
       { key: "WWnd_Valid_NRMSE", color: "#a4de6c" },
       { key: "WWnd_Valid_RMSE", color: "#8884d8" },
       { key: "WWnd_Valid_L1", color: "#82ca9d" },
     ],
   };
 
+  const calculateTrainingNodeHours = (trainingTime: number): number => {
+    return trainingTime / 3600;
+  };
+
+  const trainingTimeInSeconds = metricsData.total_training_time || 0; // Assuming metricsData includes trainingTimeInMinutes
+  const nodeHours = calculateTrainingNodeHours(trainingTimeInSeconds);
   return (
-    <div>
+    <div className="metrics-page">
       <h2>Metrics for Case: {caseName}</h2>
 
       <FormControl margin="normal" variant="outlined">
@@ -191,6 +197,10 @@ const Metrics: React.FC = () => {
         </FormHelperText>
       </FormControl>
 
+      <div className="case-data">
+        <h3>Training Node Hours: {nodeHours.toFixed(2)}</h3>
+        <h3>Final Loss: {(metricsData.final_training_acc).toFixed(4)}</h3>
+      </div>
       <div className="button-container">
         {Object.keys(categories).map((category) => (
           <div key={category} className="category-group">

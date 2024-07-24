@@ -1,9 +1,14 @@
 /* Metrics.css */
+.metrics-page {
+  padding: 20px;
+  text-align: center;
+}
 .button-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 20px;
   justify-items: center;
+  margin-bottom: 60px;
 }
 
 .category-group {
@@ -39,7 +44,7 @@
 
 .metrics-info-container {
   margin-top: 20px;
-  padding: 10px;
+  padding: 30px;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
@@ -54,6 +59,13 @@
 .css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
   background-color: grey !important;
   color: white !important;
+}
+
+.case-data{
+  margin-bottom: 30px;
+  margin-top: 20px;
+  border: 1px solid darkcyan;
+  padding: 10px;
 }
 @media (max-width: 1200px) {
   .button-container {
@@ -72,8 +84,16 @@
     /*grid-template-columns: 1fr;*/
   }
 
-  .button-group button {
-    font-size: 12px;
-    padding: 10px;
+  .button-container .button-group button {
+    font-size: 13px;
+    padding: 7px;
+  }
+}
+
+@media (max-width: 400px) {
+
+  .button-container .button-group button {
+    font-size: 10px;
+    padding: 5px;
   }
 }

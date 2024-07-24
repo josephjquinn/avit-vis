@@ -30,7 +30,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
         {payload.map((entry, index) => (
           <p key={index} className="text-sm">
             <span style={{ color: entry.color }}>{entry.name}</span>:{" "}
-            {entry.value}
+            {entry.value?.toFixed(4)}
           </p>
         ))}
       </div>

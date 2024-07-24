@@ -12,8 +12,8 @@
 }
 
 .category-group {
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  /*border: 1px solid #ddd;*/
+  /*border-radius: 8px;*/
   padding: 10px;
   width: 100%;
   box-sizing: border-box;
@@ -32,14 +32,24 @@
 }
 
 .button-container .button-group button {
-  width: 100%;
-  background-color: #ccc;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 8px;
-  cursor: pointer;
-  text-align: center;
+  border-color: lightgray;
+  border-radius: 5px;
+}
+
+.button-container .button-group button.selected {
+  border-color: transparent;
+}
+
+.button-container .button-group button.selected:hover {
+  color: black !important;
+  font-weight: bold;
+  border-color: cyan;
+}
+
+.button-container .button-group button:not(selected):hover {
+  color: white !important;
+  font-weight: bold;
+  border-color: cyan;
 }
 
 .metrics-info-container {
@@ -61,11 +71,9 @@
   color: white !important;
 }
 
-.case-data{
+.case-data {
   margin-bottom: 30px;
   margin-top: 20px;
-  border: 1px solid darkcyan;
-  padding: 10px;
 }
 @media (max-width: 1200px) {
   .button-container {
@@ -91,7 +99,6 @@
 }
 
 @media (max-width: 400px) {
-
   .button-container .button-group button {
     font-size: 10px;
     padding: 5px;

@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import CustomTooltip from "../../components/Tooltip";
 
 interface Props {
   chartData: {
@@ -35,28 +36,6 @@ interface Props {
   selectedVars: string[];
 }
 
-const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
-  active,
-  payload,
-  label,
-}) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="p-4 bg-slate-900 text-white rounded-md">
-        <p className="text-lg">{`Epoch: ${label}`}</p>
-        {payload.map((entry, index) => (
-          <p key={index} className="text-sm">
-            <span style={{ color: entry.color }}>{entry.name}</span>:{" "}
-            {entry.value}
-          </p>
-        ))}
-      </div>
-    );
-  }
-
-  return null;
-};
-
 const MetricsChart: React.FC<Props> = ({ chartData, selectedVars }) => {
   const [animatingVar, setAnimatingVar] = useState<string | null>(null);
   const [animationTriggered, setAnimationTriggered] = useState<boolean>(false);
@@ -67,11 +46,11 @@ const MetricsChart: React.FC<Props> = ({ chartData, selectedVars }) => {
       const lastSelectedVar = selectedVars[selectedVars.length - 1];
       if (lastSelectedVar !== previousSelectedVarRef.current) {
         previousSelectedVarRef.current = lastSelectedVar;
-        setAnimationTriggered(false); // Reset the animation trigger
+        setAnimationTriggered(false); // Reset animation
         setTimeout(() => {
           setAnimatingVar(lastSelectedVar);
-          setAnimationTriggered(true); // Trigger the animation
-        }, 100); // Add a slight delay before starting animation
+          setAnimationTriggered(true); // Trigger animation
+        }, 100); // Delay before animation starts
       }
     }
   }, [selectedVars]);

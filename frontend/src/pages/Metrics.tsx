@@ -109,24 +109,24 @@ const Metrics: React.FC = () => {
 
   const chartData = metricsData.epoch.map((epoch, index) => ({
     epoch,
-    Train_RMSE: metricsData.train_rmse[index],
-    Valid_RMSE: metricsData.valid_rmse[index],
-    Train_NRMSE: metricsData.train_nrmse[index],
     Train_L1: metricsData.train_l1[index],
-    Valid_NRMSE: metricsData.valid_nrmse[index],
+    Train_RMSE: metricsData.train_rmse[index],
+    Train_NRMSE: metricsData.train_nrmse[index],
     Valid_L1: metricsData.valid_l1[index],
-    Dens_Valid_NRMSE: metricsData.dens_valid_nrmse[index],
-    Dens_Valid_RMSE: metricsData.dens_valid_rmse[index],
+    Valid_RMSE: metricsData.valid_rmse[index],
+    Valid_NRMSE: metricsData.valid_nrmse[index],
     Dens_Valid_L1: metricsData.dens_valid_l1[index],
-    PTemp_Valid_NRMSE: metricsData.ptemp_valid_nrmse[index],
-    PTemp_Valid_RMSE: metricsData.ptemp_valid_rmse[index],
+    Dens_Valid_RMSE: metricsData.dens_valid_rmse[index],
+    Dens_Valid_NRMSE: metricsData.dens_valid_nrmse[index],
     PTemp_Valid_L1: metricsData.ptemp_valid_l1[index],
-    UWnd_Valid_NRMSE: metricsData.uwnd_valid_nrmse[index],
-    UWnd_Valid_RMSE: metricsData.uwnd_valid_rmse[index],
+    PTemp_Valid_RMSE: metricsData.ptemp_valid_rmse[index],
+    PTemp_Valid_NRMSE: metricsData.ptemp_valid_nrmse[index],
     UWnd_Valid_L1: metricsData.uwnd_valid_l1[index],
-    WWnd_Valid_NRMSE: metricsData.wwnd_valid_nrmse[index],
-    WWnd_Valid_RMSE: metricsData.wwnd_valid_rmse[index],
+    UWnd_Valid_RMSE: metricsData.uwnd_valid_rmse[index],
+    UWnd_Valid_NRMSE: metricsData.uwnd_valid_nrmse[index],
     WWnd_Valid_L1: metricsData.wwnd_valid_l1[index],
+    WWnd_Valid_RMSE: metricsData.wwnd_valid_rmse[index],
+    WWnd_Valid_NRMSE: metricsData.wwnd_valid_nrmse[index],
   }));
 
   const categories = {
@@ -199,7 +199,7 @@ const Metrics: React.FC = () => {
 
       <div className="case-data">
         <h3>Training Node Hours: {nodeHours.toFixed(2)}</h3>
-        <h3>Final Loss: {(metricsData.final_training_acc).toFixed(4)}</h3>
+        <h3>Final Loss: {metricsData.final_training_acc.toFixed(4)}</h3>
       </div>
       <div className="button-container">
         {Object.keys(categories).map((category) => (
@@ -210,12 +210,15 @@ const Metrics: React.FC = () => {
                 <Button
                   key={key}
                   onClick={() => handleButtonClick(key)}
+                  variant={
+                    selectedVars.includes(key) ? "contained" : "outlined"
+                  }
                   className={selectedVars.includes(key) ? "selected" : ""}
                   style={{
                     backgroundColor: selectedVars.includes(key)
                       ? color
-                      : "#ccc",
-                    color: "#fff",
+                      : "transparent",
+                    color: selectedVars.includes(key) ? "#fff" : color,
                   }}
                 >
                   {key}
@@ -227,53 +230,6 @@ const Metrics: React.FC = () => {
       </div>
 
       <MetricsChart chartData={chartData} selectedVars={selectedVars} />
-
-      <div className="metrics-info-container">
-        <h3>Metric Info</h3>
-        <p>
-          {/* Display metric information here */}
-          The metrics shown in the chart provide insights into the model's
-          performance over epochs. Key metrics include:
-          <ul>
-            <li>
-              <strong>Train RMSE:</strong> The root mean squared error on the
-              training set.
-            </li>
-            <li>
-              <strong>Valid RMSE:</strong> The root mean squared error on the
-              validation set.
-            </li>
-            <li>
-              <strong>Train NRMSE:</strong> The normalized root mean squared
-              error on the training set.
-            </li>
-            <li>
-              <strong>Valid NRMSE:</strong> The normalized root mean squared
-              error on the validation set.
-            </li>
-            <li>
-              <strong>Train L1:</strong> The L1 loss on the training set.
-            </li>
-            <li>
-              <strong>Valid L1:</strong> The L1 loss on the validation set.
-            </li>
-            <li>
-              <strong>Dens Valid NRMSE:</strong> Normalized RMSE for density
-              validation.
-            </li>
-            <li>
-              <strong>PTemp Valid RMSE:</strong> RMSE for potential temperature
-              validation.
-            </li>
-            <li>
-              <strong>UWnd Valid RMSE:</strong> RMSE for U wind validation.
-            </li>
-            <li>
-              <strong>WWnd Valid RMSE:</strong> RMSE for W wind validation.
-            </li>
-          </ul>
-        </p>
-      </div>
     </div>
   );
 };

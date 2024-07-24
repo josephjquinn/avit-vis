@@ -1,17 +1,29 @@
-/* interface.css */
-
 /* Layout for the button groups */
-.cat-btns-container{
-  display: flex;
-  gap: 10px;
-
+.compare-container {
+  padding: 20px;
 }
-.cat-label{
-  display: flex;
+.cat-container {
   justify-content: center;
-  align-items: center;
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+.cat-box {
+  text-align: center;
+  width: 20%;
+}
+.cat-box h3 {
+  color: darkcyan;
+  font-size: 25px;
+}
+.button-group-wrapper {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  width: 100%;
+  margin-bottom: 50px;
 }
 .button-group-container {
+  width: 75%;
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
@@ -25,7 +37,6 @@
 /*Buttons*/
 .com-button-group h3 {
   text-align: center;
-  margin-bottom: 1rem;
 }
 
 .button {
@@ -49,10 +60,18 @@
 }
 
 /*Group Buttons*/
+.button.clear-btn {
+  background-color: transparent;
+  color: #6c757d;
+  border-radius: 0px;
+  margin-bottom: 30px;
+  width: 50%;
+}
 
 .button.group-btn {
   background-color: transparent;
   color: #6c757d;
+  border-radius: 0px;
 }
 
 .button.group-btn:hover {
@@ -99,6 +118,13 @@
   gap: 1rem;
 }
 
-.chart-container > * {
-  flex: 1;
+.chart-container {
+  display: flex;
+  margin-bottom: 50px;
+}
+
+@media (max-width: 1000px) {
+  .chart-container {
+    display: block;
+  }
 }

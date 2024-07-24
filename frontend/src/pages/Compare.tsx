@@ -7,7 +7,7 @@ import {
   getCaseNames,
 } from "../lib/services";
 import { NormalizationData } from "../types";
-import "./interface.css";
+import "./Compare.css";
 
 interface MetricsData {
   epoch: number[];
@@ -266,109 +266,125 @@ const Compare: React.FC = () => {
   const defaultRadarData = [{ name: "No Data", data: {} as NormalizationData }];
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Select Cases to Compare</h2>
-
-      <div className="cat-label">
-        <h3>Model Sizes</h3>
-      </div>
-      <div className="cat-btns-container">
-        <button
-          onClick={() => handleSelectCases("ti")}
-          className={`button ${activeGroup === "ti" ? "group-btn-success" : "group-btn"}`}
-        >
-          Select All "ti" Cases
-        </button>
-        <button
-          onClick={() => handleSelectCases("s")}
-          className={`button ${activeGroup === "s" ? "group-btn-success" : "group-btn"}`}
-        >
-          Select All "s" Cases
-        </button>
-        <button
-          onClick={() => handleSelectCases("b")}
-          className={`button ${activeGroup === "b" ? "group-btn-success" : "group-btn"}`}
-        >
-          Select All "b" Cases
-        </button>
-      </div>
-      <div className="cat-label">
-        <h3>Patch Sizes</h3>
-      </div>
-      <div className="cat-btns-container">
-        {allPatchSizes.map((size) => (
-          <button
-            key={size}
-            onClick={() => handleSelectPatchSize(size)}
-            className={`button ${selectedPatchSizes.has(size) ? "group-btn-success" : "group-btn"}`}
-          >
-            Patch Size {size}
-          </button>
-        ))}
-      </div>
-      <div className="cat-label">
-        <h3>Batch Sizes</h3>
-      </div>
-      <div className="cat-btns-container">
-        {allBatchSizes.map((size) => (
-          <button
-            key={size}
-            onClick={() => handleSelectBatchSize(size)}
-            className={`button ${selectedBatchSizes.has(size) ? "group-btn-success" : "group-btn"}`}
-          >
-            Batch Size {size}
-          </button>
-        ))}
-      </div>
-
-      <button className="button case-btn" onClick={handleClearAll}>
-        Clear All
-      </button>
-      <div className="button-group-container">
-        <div className="com-button-group">
-          <h3>TI Cases</h3>
-          {tiCases.map((name) => (
-            <button
-              key={name}
-              onClick={() => handleButtonClick(name)}
-              className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
-            >
-              {name}
-            </button>
-          ))}
+    <div className="compare-container">
+      <div>
+        <div className="cat-container">
+          <div className="cat-box">
+            <h3>Model Sizes</h3>
+            <div className="cat-btns-container">
+              <button
+                onClick={() => handleSelectCases("ti")}
+                className={`button ${activeGroup === "ti" ? "group-btn-success" : "group-btn"}`}
+              >
+                Ti
+              </button>
+              <button
+                onClick={() => handleSelectCases("s")}
+                className={`button ${activeGroup === "s" ? "group-btn-success" : "group-btn"}`}
+              >
+                S
+              </button>
+              <button
+                onClick={() => handleSelectCases("b")}
+                className={`button ${activeGroup === "b" ? "group-btn-success" : "group-btn"}`}
+              >
+                B
+              </button>
+            </div>
+          </div>
+          <div className="cat-box">
+            <h3>Patch Sizes</h3>
+            <div className="cat-btns-container">
+              {allPatchSizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => handleSelectPatchSize(size)}
+                  className={`button ${selectedPatchSizes.has(size) ? "group-btn-success" : "group-btn"}`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="cat-box">
+            <h3>Batch Sizes</h3>
+            <div className="cat-btns-container">
+              {allBatchSizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => handleSelectBatchSize(size)}
+                  className={`button ${selectedBatchSizes.has(size) ? "group-btn-success" : "group-btn"}`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="com-button-group">
-          <h3>S Cases</h3>
-          {sCases.map((name) => (
-            <button
-              key={name}
-              onClick={() => handleButtonClick(name)}
-              className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
-            >
-              {name}
-            </button>
-          ))}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <button className="button clear-btn" onClick={handleClearAll}>
+            Clear All
+          </button>
         </div>
-        <div className="com-button-group">
-          <h3>B Cases</h3>
-          {bCases.map((name) => (
-            <button
-              key={name}
-              onClick={() => handleButtonClick(name)}
-              className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
-            >
-              {name}
-            </button>
-          ))}
+      </div>
+
+      <div className="button-group-wrapper">
+        <div className="button-group-container">
+          <div className="com-button-group">
+            <h3>TI Cases</h3>
+            {tiCases.map((name) => (
+              <button
+                key={name}
+                onClick={() => handleButtonClick(name)}
+                className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+          <div className="com-button-group">
+            <h3>S Cases</h3>
+            {sCases.map((name) => (
+              <button
+                key={name}
+                onClick={() => handleButtonClick(name)}
+                className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+          <div className="com-button-group">
+            <h3>B Cases</h3>
+            {bCases.map((name) => (
+              <button
+                key={name}
+                onClick={() => handleButtonClick(name)}
+                className={`button ${selectedCases.has(name) ? "case-btn-success" : "case-btn"}`}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       <div className="chart-container">
-        <MultiLChart
-          chartData={chartData.length > 0 ? chartData : [{ epoch: 0 }]}
-        />
-        <RChart
-          dataSets={radarData.length > 0 ? radarData : defaultRadarData}
-        />
+        <div style={{width:"100%"}}>
+          <MultiLChart
+            chartData={chartData.length > 0 ? chartData : [{ epoch: 0 }]}
+          />
+        </div>
+        <div style={{width:"100%"}}>
+          <RChart
+            dataSets={radarData.length > 0 ? radarData : defaultRadarData}
+          />
+        </div>
       </div>
     </div>
   );

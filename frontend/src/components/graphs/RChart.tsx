@@ -123,7 +123,8 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
   );
 
   // Use default data if no radarDataFormatted is present
-  const dataToDisplay = radarDataFormatted.length > 0 ? radarDataFormatted : defaultRadarData;
+  const dataToDisplay =
+    radarDataFormatted.length > 0 ? radarDataFormatted : defaultRadarData;
 
   return (
     <div style={{ width: "100%", height: 500 }}>

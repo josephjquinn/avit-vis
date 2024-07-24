@@ -105,7 +105,7 @@ const Visualize: React.FC = () => {
             className={`button play-btn ${isPlaying ? "active" : ""}`}
             onClick={handlePlayPause}
           >
-            {isPlaying ? "Pause All" : "Play All"}
+            {isPlaying ? "Pause" : "Play"}
           </button>
           <div className="control-btn-container">
             <button

@@ -7,7 +7,7 @@ const NavBar: React.FC = () => {
   return (
     <header className="header">
       <NavLink to="/" className="logo">
-        WebDemo
+        AViT-Vis
       </NavLink>
       <nav className="navbar">
         <NavLink

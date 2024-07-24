@@ -1,0 +1,79 @@
+/* src/Visualize.css */
+.control-group-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+}
+.control-btn-container {
+  display: flex;
+  gap: 10px;
+}
+/* Buttons */
+.button {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.button:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+/* Playback Speed Buttons */
+.button.playback-btn {
+  background-color: transparent;
+  color: #007bff;
+}
+
+.button.playback-btn:hover {
+  background-color: #e9ecef;
+}
+
+.button.active {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+/* Progress Bar */
+.progress-bar {
+  height: 20px;
+  background-color: #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.1s;
+}
+
+/* Video Container */
+.video-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.video-item {
+  flex: 1;
+  min-width: 200px; /* Adjust as needed */
+}
+
+.time-step {
+  font-size: 16px;
+}

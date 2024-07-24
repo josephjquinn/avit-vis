@@ -325,7 +325,7 @@ const Compare: React.FC = () => {
         Clear All
       </button>
       <div className="button-group-container">
-        <div className="button-group">
+        <div className="com-button-group">
           <h3>TI Cases</h3>
           {tiCases.map((name) => (
             <button
@@ -337,7 +337,7 @@ const Compare: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className="button-group">
+        <div className="com-button-group">
           <h3>S Cases</h3>
           {sCases.map((name) => (
             <button
@@ -349,7 +349,7 @@ const Compare: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className="button-group">
+        <div className="com-button-group">
           <h3>B Cases</h3>
           {bCases.map((name) => (
             <button

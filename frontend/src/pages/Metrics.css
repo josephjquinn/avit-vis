@@ -69,11 +69,11 @@
 
 @media (max-width: 480px) {
   .button-container {
-    grid-template-columns: 1fr;
+    /*grid-template-columns: 1fr;*/
   }
 
   .button-group button {
-    font-size: 14px;
+    font-size: 12px;
     padding: 10px;
   }
 }

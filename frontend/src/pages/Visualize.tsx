@@ -1,19 +1,20 @@
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./Visualize.css"; // Import the CSS file
+import { TextField } from "@mui/material";
 
-const Visualize = () => {
-  const videoRefs = useRef([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTimeStep, setCurrentTimeStep] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [playbackRate, setPlaybackRate] = useState(1); // Default playback rate
-  const [inputTimeStep, setInputTimeStep] = useState(0); // Time step input state
+const Visualize: React.FC = () => {
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [currentTimeStep, setCurrentTimeStep] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(0);
+  const [playbackRate, setPlaybackRate] = useState<number>(1); // Default playback rate
+  const [inputTimeStep, setInputTimeStep] = useState<string>(""); // Time step input state as string
 
-  const videoUrls = [
-    "/uwnd_animation.mp4",
-    "/density_animation.mp4",
-    "/ptemp_animation.mp4",
-    "/wwnd_animation.mp4",
+  const videoUrls: { url: string; label: string }[] = [
+    { url: "/uwnd_animation.mp4", label: "uwnd" },
+    { url: "/density_animation.mp4", label: "dens" },
+    { url: "/ptemp_animation.mp4", label: "ptemp" },
+    { url: "/wwnd_animation.mp4", label: "wwnd" },
   ];
 
   const totalSteps = 1000; // Number of time steps
@@ -35,7 +36,7 @@ const Visualize = () => {
     });
   };
 
-  const handlePlaybackRateChange = (rate) => {
+  const handlePlaybackRateChange = (rate: number) => {
     setPlaybackRate(rate);
     videoRefs.current.forEach((video) => {
       if (video) {
@@ -56,20 +57,30 @@ const Visualize = () => {
     }
   };
 
-  const handleTimeStepChange = (event) => {
-    const newTimeStep = Number(event.target.value);
-    setInputTimeStep(newTimeStep);
+  const handleTimeStepChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Get value as string and remove leading zeros
+    let value = event.target.value.replace(/^0+/, "");
+    setInputTimeStep(value);
   };
 
   const jumpToTimeStep = () => {
-    if (videoRefs.current[0]) {
-      const newTime = inputTimeStep * stepDuration;
+    if (videoRefs.current[0] && inputTimeStep !== "") {
+      const newTimeStep = parseInt(inputTimeStep, 10);
+      if (isNaN(newTimeStep) || newTimeStep < 0 || newTimeStep >= totalSteps)
+        return; // Validate input
+      const newTime = newTimeStep * stepDuration;
       videoRefs.current.forEach((video) => {
         if (video) {
           video.currentTime = newTime;
           updateTimeStepAndProgress();
         }
       });
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter") {
+      jumpToTimeStep();
     }
   };
 
@@ -91,7 +102,7 @@ const Visualize = () => {
         <div className="button-group">
           <h3>Controls</h3>
           <button
-            className={`button playback-btn ${isPlaying ? "active" : ""}`}
+            className={`button play-btn ${isPlaying ? "active" : ""}`}
             onClick={handlePlayPause}
           >
             {isPlaying ? "Pause All" : "Play All"}
@@ -124,19 +135,53 @@ const Visualize = () => {
           </div>
         </div>
       </div>
-      <div className="video-container">
-        {videoUrls.map((url, index) => (
-          <div key={index} className="video-item">
-            <video
-              ref={(el) => (videoRefs.current[index] = el)}
-              src={url}
-              width="450"
-              height="auto"
-              loop
-              onError={(e) => console.error("Error loading video:", e)}
-            />
-          </div>
-        ))}
+
+      <div className="time-step-controls">
+        <TextField
+          type="number"
+          value={inputTimeStep}
+          onChange={handleTimeStepChange}
+          onKeyDown={handleKeyDown} // Add key down event listener
+          InputProps={{ inputProps: { min: 0, max: totalSteps - 1 } }}
+          fullWidth
+          variant="outlined"
+          margin="normal"
+          label="Time Step"
+          sx={{
+            backgroundColor: "#333", // Dark background color
+            color: "#fff", // Light text color
+            "& .MuiInputBase-input": {
+              color: "#fff", // Light text color inside the input
+              "&::-webkit-inner-spin-button": {
+                WebkitAppearance: "none",
+                margin: 0,
+              },
+              "&::-webkit-outer-spin-button": {
+                WebkitAppearance: "none",
+                margin: 0,
+              },
+            },
+            "& .MuiInputLabel-root": {
+              color: "#aaa", // Light color for the label
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#555", // Border color
+            },
+            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#888", // Border color on hover
+            },
+            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "#fff", // Border color when focused
+              },
+            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-input": {
+              color: "#fff", // Text color when focused
+            },
+          }}
+        />
+        <button className="button ts-btn" onClick={jumpToTimeStep}>
+          Go to Time Step
+        </button>
       </div>
       <div className="time-step">
         <div>Time Step: {currentTimeStep}</div>
@@ -146,16 +191,21 @@ const Visualize = () => {
             style={{ width: `${progress}%` }}
           />
         </div>
-        <div className="time-step-controls">
-          <input
-            type="number"
-            value={inputTimeStep}
-            onChange={handleTimeStepChange}
-            min="0"
-            max={totalSteps - 1}
-          />
-          <button onClick={jumpToTimeStep}>Go to Time Step</button>
-        </div>
+      </div>
+      <div className="video-container">
+        {videoUrls.map((video, index) => (
+          <div key={index} className="video-item">
+            <video
+              ref={(el) => (videoRefs.current[index] = el)}
+              src={video.url}
+              width="450"
+              height="auto"
+              loop
+              onError={(e) => console.error("Error loading video:", e)}
+            />
+            <div className="video-label">{video.label}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 .tooltip-container {
-  background: rgba(0, 0, 0, 0.3) !important; /* Semi-transparent background */
+  text-align: left;
+  background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent background */
   color: white !important;
   backdrop-filter: blur(8px); /* Apply blur effect */
   -webkit-backdrop-filter: blur(8px); /* Safari support */

@@ -1,4 +1,5 @@
 import React from "react";
+import CustomTooltip from "../../components/Tooltip";
 import {
   RadarChart,
   Radar,
@@ -7,7 +8,6 @@ import {
   PolarRadiusAxis,
   Tooltip,
   ResponsiveContainer,
-  TooltipProps,
   Legend,
 } from "recharts";
 import { NormalizationData } from "../../types";
@@ -21,40 +21,6 @@ interface RadarData {
   subject: string;
   [key: string]: number | string;
 }
-
-const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
-  active,
-  payload,
-  label,
-}) => {
-  if (active && payload && payload.length) {
-    const tooltipData = payload.reduce(
-      (acc: { [key: string]: number }, item) => {
-        if (item.name && item.value !== undefined) {
-          acc[item.name] = item.value;
-        }
-        return acc;
-      },
-      {},
-    );
-
-    return (
-      <div className="p-4 bg-slate-900 flex flex-col gap-4 rounded-md">
-        <p className="text-medium text-lg">{`${label}`}</p>
-        {Object.entries(tooltipData).map(([caseName, value]) => (
-          <p
-            key={caseName}
-            className="text-sm"
-            style={{ color: colorMap[caseName] || "#000000" }}
-          >
-            {caseName}:<span className="ml-2">{value.toFixed(2)}</span>
-          </p>
-        ))}
-      </div>
-    );
-  }
-  return null;
-};
 
 const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
   // Provide default data if no cases are selected
@@ -143,7 +109,7 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
               fillOpacity={0.3}
             />
           ))}
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip title="" />} />
           <Legend />
         </RadarChart>
       </ResponsiveContainer>

@@ -5,8 +5,7 @@ import os
 import pandas as pd
 
 
-def process_case_data(case):
-    data_dir = "/Users/jquinn/Downloads/datadim pre/"
+def process_case(data_dir, case):
     subdir_path = os.path.join(data_dir, case)
     if not os.path.isdir(subdir_path):
         raise ValueError(f"Subdirectory '{case}' not found in '{data_dir}'.")
@@ -63,13 +62,13 @@ def process_case_data(case):
     data_dict["final_training_acc"] = final_training_accuracy
     data_dict["total_training_time"] = training_sum
 
-    with open(f"{case}_data.json", "w") as outfile:
+    with open(f"./output/{case}.json", "w") as outfile:
         json.dump(data_dict, outfile)
 
     return data_dict
 
 
-def process_all_cases(data_dir="/Users/jquinn/Downloads/datadim pre/"):
+def process_all(data_dir):
     def extract_epoch(filename):
         match = re.search(r"epoch(\d+)", filename)
         return int(match.group(1)) if match else -1
@@ -115,7 +114,7 @@ def process_all_cases(data_dir="/Users/jquinn/Downloads/datadim pre/"):
         if len(files) <= 25:
             continue
 
-        for filename in files[:100]:  # Process only the first 90 epochs
+        for filename in files[:100]:
             filepath = os.path.join(subdir_path, filename)
             with open(filepath, "r") as file:
                 data = json.load(file)
@@ -138,16 +137,14 @@ def process_all_cases(data_dir="/Users/jquinn/Downloads/datadim pre/"):
 
         all_data[case] = data_dict
 
-    with open("all_cases_data.json", "w") as outfile:
+    with open("./output/all_cases.json", "w") as outfile:
         json.dump(all_data, outfile)
 
     return all_data
 
 
-def process_radar_data(data_dict):
+def normalize(data_dict):
     radar_data = {}
-
-    # Initialize lists to collect values for normalization
     metrics = [
         "train_rmse",
         "train_nrmse",
@@ -172,10 +169,8 @@ def process_radar_data(data_dict):
 
     all_metrics = {metric: [] for metric in metrics}
 
-    # Collect all metric values from each case
     for case, df in data_dict.items():
         if len(df.get("epoch", [])) >= 10:
-            # Calculate average of the last 10 epochs for each metric
             avg_last_10 = {}
             for metric in metrics:
                 values = df.get(metric, [])
@@ -186,11 +181,9 @@ def process_radar_data(data_dict):
 
             radar_data[case] = avg_last_10
 
-            # Append metrics for normalization
             for metric in metrics:
                 all_metrics[metric].append(avg_last_10[metric])
 
-    # Normalize the metrics
     min_values = {metric: min(values) for metric, values in all_metrics.items()}
     max_values = {metric: max(values) for metric, values in all_metrics.items()}
 
@@ -212,16 +205,8 @@ def process_radar_data(data_dict):
                         + 10
                     )
 
-    # Convert the radar data to a DataFrame
     radar_df = pd.DataFrame(radar_data).transpose()
-    print(radar_df)
-    with open("radar_data.json", "w") as outfile:
+    with open("./output/normalized.json", "w") as outfile:
         json.dump(radar_data, outfile)
 
     return radar_data
-
-
-case_data = process_case_data("b-256-32")
-all_cases_data = process_all_cases()
-
-radar_df = process_radar_data(all_cases_data)

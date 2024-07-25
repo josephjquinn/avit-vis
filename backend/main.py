@@ -17,6 +17,7 @@ def main(args):
         print("Processing all cases.")
 
     if normalize_tags:
+        all_cases_data = process_all(data_dir)
         radar_df = normalize(all_cases_data)
         print("Normalizing all cases.")
 

@@ -1,5 +1,5 @@
-import metricsData from "../../public/all_cases_data.json"; // Import the static JSON file
-import normalizationData from "../../public/radar_data.json"; // Import the static JSON file
+import metricsData from "../../../backend/output/all_cases.json"; // Import the static JSON file
+import normalizationData from "../../../backend/output/normalized.json"; // Import the static JSON file
 
 import { MetricsData, NormalizationData } from "../types";
 

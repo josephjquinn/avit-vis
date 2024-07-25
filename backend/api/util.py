@@ -191,18 +191,20 @@ def normalize(data_dict):
         for metric in metrics:
             if metric in min_values and metric in max_values:
                 if "rmse" in metric or "l1" in metric or "nrmse" in metric:
-                    radar_data[case][metric] = (
+                    radar_data[case][metric] = round(
                         90
                         * (max_values[metric] - metrics[metric])
                         / (max_values[metric] - min_values[metric])
-                        + 10
+                        + 10,
+                        2,
                     )
                 else:
-                    radar_data[case][metric] = (
+                    radar_data[case][metric] = round(
                         90
                         * (metrics[metric] - min_values[metric])
                         / (max_values[metric] - min_values[metric])
-                        + 10
+                        + 10,
+                        2,
                     )
 
     radar_df = pd.DataFrame(radar_data).transpose()

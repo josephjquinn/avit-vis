@@ -14,4 +14,7 @@ export const colorMap: { [key: string]: string } = {
   "ti-256-32": "#e9c46a",
   "b-256-32": "#ff9f00",
   "b-64-16": "#8d99ae",
+  "ti-1024-32": "red",
+  "s-256-8": "green",
+  "b-256-8": "cyan",
 };

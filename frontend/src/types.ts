@@ -18,7 +18,7 @@ export interface MetricsData {
   wwnd_valid_nrmse: number[];
   wwnd_valid_rmse: number[];
   wwnd_valid_l1: number[];
-  total_training_time: number;
+  node_hours: number;
   final_training_acc: number;
 }
 
@@ -41,5 +41,5 @@ export interface NormalizationData {
   wwnd_valid_nrmse: number;
   wwnd_valid_rmse: number;
   wwnd_valid_l1: number;
-  train_time: number;
+  node_hours: number;
 }

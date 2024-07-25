@@ -162,12 +162,6 @@ const Metrics: React.FC = () => {
     ],
   };
 
-  const calculateTrainingNodeHours = (trainingTime: number): number => {
-    return trainingTime / 3600;
-  };
-
-  const trainingTimeInSeconds = metricsData.total_training_time || 0; // Assuming metricsData includes trainingTimeInMinutes
-  const nodeHours = calculateTrainingNodeHours(trainingTimeInSeconds);
   return (
     <div className="metrics-page">
       <h2>Metrics for Case: {caseName}</h2>
@@ -198,7 +192,7 @@ const Metrics: React.FC = () => {
       </FormControl>
 
       <div className="case-data">
-        <h3>Training Node Hours: {nodeHours.toFixed(2)}</h3>
+        <h3>Training Node Hours: {metricsData.node_hours.toFixed(2)}</h3>
         <h3>Final Loss: {metricsData.final_training_acc.toFixed(4)}</h3>
       </div>
       <div className="button-container">

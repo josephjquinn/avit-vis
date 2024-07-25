@@ -23,7 +23,6 @@ interface RadarData {
 }
 
 const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
-  // Provide default data if no cases are selected
   const defaultRadarData: RadarData[] = [
     { subject: "Train RMSE", "No Data": 0 },
     { subject: "Train NRMSE", "No Data": 0 },
@@ -37,7 +36,7 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     { subject: "UWnd Valid RMSE", "No Data": 0 },
     { subject: "WWnd Valid NRMSE", "No Data": 0 },
     { subject: "WWnd Valid RMSE", "No Data": 0 },
-    { subject: "Total Training Time", "No Data": 0 },
+    { subject: "Node Hours", "No Data": 0 },
   ];
 
   const radarData = dataSets.flatMap(({ name, data }) => [
@@ -53,7 +52,7 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     { subject: "UWnd Valid RMSE", name, value: data.uwnd_valid_rmse },
     { subject: "WWnd Valid NRMSE", name, value: data.wwnd_valid_nrmse },
     { subject: "WWnd Valid RMSE", name, value: data.wwnd_valid_rmse },
-    { subject: "Total Training Time", name, value: data.train_time },
+    { subject: "Node Hours", name, value: data.node_hours },
   ]);
 
   const radarDataFormatted: RadarData[] = radarData.reduce(
@@ -76,7 +75,6 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     [],
   );
 
-  // Use default data if no radarDataFormatted is present
   const dataToDisplay =
     radarDataFormatted.length > 0 ? radarDataFormatted : defaultRadarData;
 

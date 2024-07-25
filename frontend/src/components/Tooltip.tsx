@@ -5,6 +5,7 @@ import "./Tooltip.css";
 interface CustomTooltipProps extends TooltipProps<number, string> {
   title?: string; // Optional title prop
   round?: number; // Optional number of decimal places for rounding
+  sortBy?: "value" | "name"; // Optional prop to determine sorting criteria
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
@@ -13,8 +14,18 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   label,
   title,
   round = 4, // Default to 4 decimal places if not specified
+  sortBy = "value", // Default sorting criteria is by value
 }) => {
   if (active && payload && payload.length) {
+    // Sort the payload based on the provided criteria
+    const sortedPayload = [...payload].sort((a, b) => {
+      if (sortBy === "value") {
+        return (b.value || 0) - (a.value || 0); // Sort by value in descending order
+      } else {
+        return (a.name || "").localeCompare(b.name || ""); // Sort by name in ascending order
+      }
+    });
+
     return (
       <div
         className="tooltip-container p-4 rounded-md"
@@ -27,7 +38,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
         }}
       >
         <p className="text-lg">{title ? `${title}: ${label}` : label}</p>
-        {payload.map((entry, index) => (
+        {sortedPayload.map((entry, index) => (
           <p key={index} className="text-sm">
             <span style={{ color: entry.color }}>{entry.name}</span>:{" "}
             {entry.value !== undefined ? entry.value.toFixed(round) : "N/A"}

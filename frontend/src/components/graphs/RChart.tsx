@@ -109,7 +109,7 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
               fillOpacity={0.3}
             />
           ))}
-          <Tooltip content={<CustomTooltip title="" />} />
+          <Tooltip content={<CustomTooltip title="" round={2} />} />
           <Legend />
         </RadarChart>
       </ResponsiveContainer>

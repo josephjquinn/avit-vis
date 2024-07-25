@@ -3,7 +3,8 @@ import { TooltipProps } from "recharts";
 import "./Tooltip.css";
 
 interface CustomTooltipProps extends TooltipProps<number, string> {
-  title?: string;  // Optional title prop
+  title?: string; // Optional title prop
+  round?: number; // Optional number of decimal places for rounding
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
@@ -11,6 +12,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   payload,
   label,
   title,
+  round = 4, // Default to 4 decimal places if not specified
 }) => {
   if (active && payload && payload.length) {
     return (
@@ -24,13 +26,11 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)", // Optional shadow for better visibility
         }}
       >
-        <p className="text-lg">
-          {title ? `${title}: ${label}` : label}
-        </p>
+        <p className="text-lg">{title ? `${title}: ${label}` : label}</p>
         {payload.map((entry, index) => (
           <p key={index} className="text-sm">
             <span style={{ color: entry.color }}>{entry.name}</span>:{" "}
-            {entry.value?.toFixed(4)}
+            {entry.value !== undefined ? entry.value.toFixed(round) : "N/A"}
           </p>
         ))}
       </div>

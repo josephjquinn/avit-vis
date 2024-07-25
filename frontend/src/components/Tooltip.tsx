@@ -3,9 +3,9 @@ import { TooltipProps } from "recharts";
 import "./Tooltip.css";
 
 interface CustomTooltipProps extends TooltipProps<number, string> {
-  title?: string; // Optional title prop
-  round?: number; // Optional number of decimal places for rounding
-  sortBy?: "value" | "name"; // Optional prop to determine sorting criteria
+  title?: string;
+  round?: number;
+  sortBy?: "value" | "name";
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
@@ -13,16 +13,15 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   payload,
   label,
   title,
-  round = 4, // Default to 4 decimal places if not specified
-  sortBy = "value", // Default sorting criteria is by value
+  round = 4,
+  sortBy = "value",
 }) => {
   if (active && payload && payload.length) {
-    // Sort the payload based on the provided criteria
     const sortedPayload = [...payload].sort((a, b) => {
       if (sortBy === "value") {
-        return (b.value || 0) - (a.value || 0); // Sort by value in descending order
+        return (b.value || 0) - (a.value || 0); 
       } else {
-        return (a.name || "").localeCompare(b.name || ""); // Sort by name in ascending order
+        return (a.name || "").localeCompare(b.name || ""); 
       }
     });
 

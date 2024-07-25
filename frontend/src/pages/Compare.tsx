@@ -375,12 +375,12 @@ const Compare: React.FC = () => {
         </div>
       </div>
       <div className="chart-container">
-        <div style={{width:"100%"}}>
+        <div style={{ width: "100%" }}>
           <MultiLChart
             chartData={chartData.length > 0 ? chartData : [{ epoch: 0 }]}
           />
         </div>
-        <div style={{width:"100%"}}>
+        <div style={{ width: "100%" }}>
           <RChart
             dataSets={radarData.length > 0 ? radarData : defaultRadarData}
           />

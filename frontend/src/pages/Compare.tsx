@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import MultiLChart from "../components/graphs/MultiLChart";
-import RChart from "../components/graphs/RChart";
+import RNormChart from "../components/graphs/RNormChart";
 import {
   getMetricsData,
   getNormalizationData,
   getCaseNames,
+  getMinData,
 } from "../lib/services";
 import { NormalizationData } from "../types";
 import "./Compare.css";
+import RMinChart from "../components/graphs/RMinChart";
 
 interface MetricsData {
   epoch: number[];
@@ -39,6 +41,9 @@ const sortCasesByBatchAndPatchSize = (cases: string[]): string[] => {
 const Compare: React.FC = () => {
   const [metricsDataState, setMetricsDataState] = useState<MetricsDataMap>({});
   const [normalizationDataState, setNormalizationDataState] = useState<{
+    [key: string]: NormalizationData | null;
+  }>({});
+  const [minDataState, setMinDataState] = useState<{
     [key: string]: NormalizationData | null;
   }>({});
   const [caseNames, setCaseNames] = useState<string[]>([]);
@@ -90,6 +95,18 @@ const Compare: React.FC = () => {
           {} as MetricsDataMap,
         );
         setMetricsDataState(metricsDataMap);
+
+        const minData = await Promise.all(
+          caseNames.map((name) => getMinData(name)),
+        );
+        const minDataMap = caseNames.reduce(
+          (map, name, index) => {
+            map[name] = minData[index] || null;
+            return map;
+          },
+          {} as { [key: string]: NormalizationData | null },
+        );
+        setMinDataState(minDataMap);
 
         const normalizationData = await Promise.all(
           caseNames.map((name) => getNormalizationData(name)),
@@ -263,6 +280,11 @@ const Compare: React.FC = () => {
     data: normalizationDataState[caseName] || ({} as NormalizationData),
   }));
 
+  const radarMinData = Array.from(selectedCases).map((caseName) => ({
+    name: caseName,
+    data: minDataState[caseName] || ({} as NormalizationData),
+  }));
+
   const defaultRadarData = [{ name: "No Data", data: {} as NormalizationData }];
 
   return (
@@ -380,10 +402,20 @@ const Compare: React.FC = () => {
             chartData={chartData.length > 0 ? chartData : [{ epoch: 0 }]}
           />
         </div>
-        <div style={{ width: "100%" }}>
-          <RChart
-            dataSets={radarData.length > 0 ? radarData : defaultRadarData}
-          />
+        <div className="radar-container">
+          <div style={{ width: "100%", textAlign: "center" }}>
+            <h3>Normalized Data 1-100 (Higher is better)</h3>
+            <RNormChart
+              dataSets={radarData.length > 0 ? radarData : defaultRadarData}
+            />
+          </div>
+
+          <div style={{ width: "100%", textAlign: "center" }}>
+            <h3>Minimum Values (Lower is better)</h3>
+            <RMinChart
+              dataSets={radarData.length > 0 ? radarMinData : defaultRadarData}
+            />
+          </div>
         </div>
       </div>
     </div>

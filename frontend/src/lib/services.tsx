@@ -1,5 +1,6 @@
 import metricsData from "../../../backend/output/all_cases.json"; // Import the static JSON file
 import normalizationData from "../../../backend/output/normalized.json"; // Import the static JSON file
+import minData from "../../../backend/output/mins.json"; // Import the static JSON file
 
 import { MetricsData, NormalizationData } from "../types";
 
@@ -26,5 +27,13 @@ export const getNormalizationData = (
     return data;
   } else {
     throw new Error(`No normalization data found for case ${caseName}`);
+  }
+};
+export const getMinData = (caseName: string): NormalizationData | null => {
+  const data = (minData as NormalizationDataMap)[caseName];
+  if (data) {
+    return data;
+  } else {
+    throw new Error(`No min data found for case ${caseName}`);
   }
 };

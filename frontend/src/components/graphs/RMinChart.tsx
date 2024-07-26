@@ -1,5 +1,5 @@
 import React from "react";
-import CustomTooltip from "../../components/Tooltip";
+import CustomTooltip from "../Tooltip";
 import {
   RadarChart,
   Radar,
@@ -22,7 +22,7 @@ interface RadarData {
   [key: string]: number | string;
 }
 
-const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
+const MinChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
   const defaultRadarData: RadarData[] = [
     { subject: "Train RMSE", "No Data": 0 },
     { subject: "Train NRMSE", "No Data": 0 },
@@ -36,7 +36,6 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     { subject: "UWnd Valid RMSE", "No Data": 0 },
     { subject: "WWnd Valid NRMSE", "No Data": 0 },
     { subject: "WWnd Valid RMSE", "No Data": 0 },
-    { subject: "Node Hours", "No Data": 0 },
   ];
 
   const radarData = dataSets.flatMap(({ name, data }) => [
@@ -52,7 +51,6 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     { subject: "UWnd Valid RMSE", name, value: data.uwnd_valid_rmse },
     { subject: "WWnd Valid NRMSE", name, value: data.wwnd_valid_nrmse },
     { subject: "WWnd Valid RMSE", name, value: data.wwnd_valid_rmse },
-    { subject: "Node Hours", name, value: data.node_hours },
   ]);
 
   const radarDataFormatted: RadarData[] = radarData.reduce(
@@ -84,7 +82,7 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
         <RadarChart outerRadius={200} data={dataToDisplay}>
           <PolarGrid />
           <PolarAngleAxis dataKey="subject" />
-          <PolarRadiusAxis angle={30} domain={[0, 100]} />
+          <PolarRadiusAxis angle={30} />
           {dataSets.map(({ name }) => (
             <Radar
               key={name}
@@ -103,4 +101,4 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
   );
 };
 
-export default RChart;
+export default MinChart;

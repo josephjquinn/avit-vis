@@ -119,12 +119,22 @@
 }
 
 .chart-container {
-  display: flex;
   margin-bottom: 50px;
+  display: block;
+}
+
+.radar-container {
+  width: 100%;
+  display: flex;
+  margin-top: 100px;
 }
 
 @media (max-width: 1000px) {
-  .chart-container {
+  .radar-container {
     display: block;
   }
+}
+
+.radar-container .recharts-legend-wrapper {
+  bottom: -25px !important;
 }

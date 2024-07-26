@@ -29,14 +29,14 @@ const MinChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     { subject: "Train NRMSE", "No Data": 0 },
     { subject: "Valid NRMSE", "No Data": 0 },
     { subject: "Valid RMSE", "No Data": 0 },
-    { subject: "Dens Valid NRMSE", "No Data": 0 },
-    { subject: "Dens Valid RMSE", "No Data": 0 },
-    { subject: "PTemp Valid NRMSE", "No Data": 0 },
-    { subject: "PTemp Valid RMSE", "No Data": 0 },
-    { subject: "UWnd Valid NRMSE", "No Data": 0 },
-    { subject: "UWnd Valid RMSE", "No Data": 0 },
-    { subject: "WWnd Valid NRMSE", "No Data": 0 },
-    { subject: "WWnd Valid RMSE", "No Data": 0 },
+    { subject: "dens NRMSE", "No Data": 0 },
+    { subject: "dens RMSE", "No Data": 0 },
+    { subject: "ptmp NRMSE", "No Data": 0 },
+    { subject: "ptmp RMSE", "No Data": 0 },
+    { subject: "uwnd NRMSE", "No Data": 0 },
+    { subject: "uwnd RMSE", "No Data": 0 },
+    { subject: "wwnd NRMSE", "No Data": 0 },
+    { subject: "wwnd RMSE", "No Data": 0 },
   ];
 
   const radarData = dataSets.flatMap(({ name, data }) => [
@@ -44,14 +44,14 @@ const MinChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     { subject: "Train NRMSE", name, value: data.train_nrmse },
     { subject: "Valid NRMSE", name, value: data.valid_nrmse },
     { subject: "Valid RMSE", name, value: data.valid_rmse },
-    { subject: "Dens Valid NRMSE", name, value: data.dens_valid_nrmse },
-    { subject: "Dens Valid RMSE", name, value: data.dens_valid_rmse },
-    { subject: "PTemp Valid NRMSE", name, value: data.ptemp_valid_nrmse },
-    { subject: "PTemp Valid RMSE", name, value: data.ptemp_valid_rmse },
-    { subject: "UWnd Valid NRMSE", name, value: data.uwnd_valid_nrmse },
-    { subject: "UWnd Valid RMSE", name, value: data.uwnd_valid_rmse },
-    { subject: "WWnd Valid NRMSE", name, value: data.wwnd_valid_nrmse },
-    { subject: "WWnd Valid RMSE", name, value: data.wwnd_valid_rmse },
+    { subject: "dens NRMSE", name, value: data.dens_valid_nrmse },
+    { subject: "dens RMSE", name, value: data.dens_valid_rmse },
+    { subject: "ptemp NRMSE", name, value: data.ptemp_valid_nrmse },
+    { subject: "ptmp RMSE", name, value: data.ptemp_valid_rmse },
+    { subject: "uwnd NRMSE", name, value: data.uwnd_valid_nrmse },
+    { subject: "uwnd RMSE", name, value: data.uwnd_valid_rmse },
+    { subject: "wwnd NRMSE", name, value: data.wwnd_valid_nrmse },
+    { subject: "wwnd RMSE", name, value: data.wwnd_valid_rmse },
   ]);
 
   const radarDataFormatted: RadarData[] = radarData.reduce(
@@ -82,7 +82,8 @@ const MinChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
       <ResponsiveContainer>
         <RadarChart outerRadius="70%" data={dataToDisplay}>
           <PolarGrid />
-          <PolarAngleAxis dataKey="subject" />
+          <PolarAngleAxis dataKey="subject" orientation="outer" cx={9999990} />
+
           <PolarRadiusAxis angle={30} />
           {dataSets.map(({ name }) => (
             <Radar

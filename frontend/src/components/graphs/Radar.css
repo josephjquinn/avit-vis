@@ -8,6 +8,10 @@
   margin-bottom: 50px;
 }
 
+.recharts-polar-grid {
+  padding: 100px;
+  margin-bottom: 100px;
+}
 @media (max-width: 1000px) {
   .radar-container .recharts-legend-wrapper {
     bottom: -5px !important;

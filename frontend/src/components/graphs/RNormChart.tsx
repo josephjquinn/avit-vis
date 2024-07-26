@@ -36,10 +36,10 @@ const RChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
   const radarData = dataSets.flatMap(({ name, data }) => [
     { subject: "Train Acc", name, value: data.train_rmse },
     { subject: "Valid Acc", name, value: data.valid_rmse },
-    { subject: "Dens Valid Acc", name, value: data.dens_valid_rmse },
-    { subject: "PTemp Valid Acc", name, value: data.ptemp_valid_rmse },
-    { subject: "UWnd Valid Acc", name, value: data.uwnd_valid_rmse },
-    { subject: "WWnd Valid Acc", name, value: data.wwnd_valid_rmse },
+    { subject: "dens Acc", name, value: data.dens_valid_rmse },
+    { subject: "ptemp Acc", name, value: data.ptemp_valid_rmse },
+    { subject: "uwnd Acc", name, value: data.uwnd_valid_rmse },
+    { subject: "wwnd Acc", name, value: data.wwnd_valid_rmse },
     { subject: "Node Hours", name, value: data.node_hours },
   ]);
 

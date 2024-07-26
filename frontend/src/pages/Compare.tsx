@@ -34,29 +34,29 @@ const sortCasesByBatchAndPatchSize = (cases: string[]): string[] => {
   return cases.sort((a, b) => {
     const batchSizeComparison = extractBatchSize(a) - extractBatchSize(b);
     if (batchSizeComparison !== 0) return batchSizeComparison;
-    return extractPatchSize(b) - extractPatchSize(a); // Reverse the order for patch size
+    return extractPatchSize(b) - extractPatchSize(a);
   });
 };
 
 const Compare: React.FC = () => {
   const [metricsDataState, setMetricsDataState] = useState<MetricsDataMap>({});
-  const [normalizationDataState, setNormalizationDataState] = useState<{
-    [key: string]: NormalizationData | null;
-  }>({});
-  const [minDataState, setMinDataState] = useState<{
-    [key: string]: NormalizationData | null;
-  }>({});
-  const [caseNames, setCaseNames] = useState<string[]>([]);
-  const [selectedCases, setSelectedCases] = useState<Set<string>>(new Set());
-  const [activeGroup, setActiveGroup] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedGroupState, setSelectedGroupState] = useState<{
-    [key: string]: boolean;
-  }>({
+  const [normalizationDataState, setNormalizationDataState] = useState<
+    Record<string, NormalizationData | null>
+  >({});
+  const [minDataState, setMinDataState] = useState<
+    Record<string, NormalizationData | null>
+  >({});
+  const [selectedGroupState, setSelectedGroupState] = useState<
+    Record<string, boolean>
+  >({
     ti: false,
     s: false,
     b: false,
   });
+  const [caseNames, setCaseNames] = useState<string[]>([]);
+  const [selectedCases, setSelectedCases] = useState<Set<string>>(new Set());
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Track selected states for batch sizes and patch sizes
   const [selectedBatchSizes, setSelectedBatchSizes] = useState<Set<number>>(
@@ -137,7 +137,7 @@ const Compare: React.FC = () => {
 
     // Reset group selection states
     setSelectedGroupState(() => {
-      const resetGroupState = {};
+      const resetGroupState: Record<string, boolean> = {};
       for (const group of Object.keys(selectedGroupState)) {
         resetGroupState[group] = false;
       }

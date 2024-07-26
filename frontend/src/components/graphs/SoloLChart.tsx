@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 import {
   LineChart as RechartsLineChart,
   Line,
   XAxis,
   YAxis,
   Tooltip,
-  TooltipProps,
   Legend,
   ResponsiveContainer,
 } from "recharts";
@@ -37,24 +36,6 @@ interface Props {
 }
 
 const MetricsChart: React.FC<Props> = ({ chartData, selectedVars }) => {
-  const [animatingVar, setAnimatingVar] = useState<string | null>(null);
-  const [animationTriggered, setAnimationTriggered] = useState<boolean>(false);
-  const previousSelectedVarRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (selectedVars.length > 0) {
-      const lastSelectedVar = selectedVars[selectedVars.length - 1];
-      if (lastSelectedVar !== previousSelectedVarRef.current) {
-        previousSelectedVarRef.current = lastSelectedVar;
-        setAnimationTriggered(false); // Reset animation
-        setTimeout(() => {
-          setAnimatingVar(lastSelectedVar);
-          setAnimationTriggered(true); // Trigger animation
-        }, 100); // Delay before animation starts
-      }
-    }
-  }, [selectedVars]);
-
   const variables = [
     { key: "Train_RMSE", color: "#8884d8" },
     { key: "Train_NRMSE", color: "#82ca9d" },
@@ -81,7 +62,7 @@ const MetricsChart: React.FC<Props> = ({ chartData, selectedVars }) => {
       <RechartsLineChart data={chartData}>
         <XAxis dataKey="epoch" />
         <YAxis scale="log" domain={["auto", "auto"]} />
-        <Tooltip content={<CustomTooltip title="Epoch"/>} />
+        <Tooltip content={<CustomTooltip title="Epoch" />} />
         <Legend />
 
         {variables.map(({ key, color }) =>

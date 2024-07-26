@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MetricsData, NormalizationData } from "../types";
 import MetricsChart from "../components/graphs/SoloLChart";
+import { SelectChangeEvent } from "@mui/material"; // Add this import
 import {
   getMetricsData,
   getCaseNames,
@@ -14,9 +15,17 @@ import {
   FormHelperText,
   InputLabel,
 } from "@mui/material";
-import "./Metrics.css"; // Ensure this CSS file is included
+import "./Metrics.css";
 
 const Metrics: React.FC = () => {
+  interface Category {
+    key: string;
+    color: string;
+  }
+
+  interface Categories {
+    [key: string]: Category[];
+  }
   const [metricsData, setMetricsData] = useState<MetricsData | null>(null);
   const [normalizationData, setNormalizationData] =
     useState<NormalizationData | null>(null);
@@ -31,7 +40,7 @@ const Metrics: React.FC = () => {
   useEffect(() => {
     const fetchCaseNames = async () => {
       try {
-        const names = await getCaseNames();
+        const names = getCaseNames();
         setCaseNames(
           names.sort((a, b) => {
             // Extract type, batch size, and patch size from case names
@@ -45,7 +54,7 @@ const Metrics: React.FC = () => {
             const bPatchSize = parseInt(bPatch, 10);
 
             // Define the order of types: ti < s < b
-            const typeOrder = { ti: 0, s: 1, b: 2 };
+            const typeOrder: { [key: string]: number } = { ti: 0, s: 1, b: 2 };
             const aTypeOrder = typeOrder[aType];
             const bTypeOrder = typeOrder[bType];
 
@@ -74,10 +83,10 @@ const Metrics: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const metrics = await getMetricsData(caseName);
+        const metrics = getMetricsData(caseName);
         setMetricsData(metrics);
 
-        const normalization = await getNormalizationData(caseName);
+        const normalization = getNormalizationData(caseName);
         setNormalizationData(normalization);
       } catch (err) {
         setError("An error occurred while fetching data");
@@ -87,7 +96,7 @@ const Metrics: React.FC = () => {
     fetchData();
   }, [caseName]);
 
-  const handleCaseChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleCaseChange = (event: SelectChangeEvent<string>) => {
     setCaseName(event.target.value as string);
   };
 
@@ -129,7 +138,7 @@ const Metrics: React.FC = () => {
     WWnd_Valid_NRMSE: metricsData.wwnd_valid_nrmse[index],
   }));
 
-  const categories = {
+  const categories: Categories = {
     Train: [
       { key: "Train_RMSE", color: "#8884d8" },
       { key: "Train_NRMSE", color: "#82ca9d" },
@@ -140,7 +149,7 @@ const Metrics: React.FC = () => {
       { key: "Valid_RMSE", color: "#00c49f" },
       { key: "Valid_L1", color: "#ffbb28" },
     ],
-    dens: [
+    Dens: [
       { key: "Dens_Valid_NRMSE", color: "#d0ed57" },
       { key: "Dens_Valid_RMSE", color: "#a4de6c" },
       { key: "Dens_Valid_L1", color: "#82ca9d" },
@@ -150,12 +159,12 @@ const Metrics: React.FC = () => {
       { key: "PTemp_Valid_RMSE", color: "#ffc658" },
       { key: "PTemp_Valid_L1", color: "#ff7300" },
     ],
-    uwnd: [
+    UWnd: [
       { key: "UWnd_Valid_NRMSE", color: "#00c49f" },
       { key: "UWnd_Valid_RMSE", color: "#ffbb28" },
       { key: "UWnd_Valid_L1", color: "#d0ed57" },
     ],
-    wwnd: [
+    WWnd: [
       { key: "WWnd_Valid_NRMSE", color: "#a4de6c" },
       { key: "WWnd_Valid_RMSE", color: "#8884d8" },
       { key: "WWnd_Valid_L1", color: "#82ca9d" },
@@ -200,24 +209,26 @@ const Metrics: React.FC = () => {
           <div key={category} className="category-group">
             <h3>{category}</h3>
             <div className="button-group">
-              {categories[category].map(({ key, color }) => (
-                <Button
-                  key={key}
-                  onClick={() => handleButtonClick(key)}
-                  variant={
-                    selectedVars.includes(key) ? "contained" : "outlined"
-                  }
-                  className={selectedVars.includes(key) ? "selected" : ""}
-                  style={{
-                    backgroundColor: selectedVars.includes(key)
-                      ? color
-                      : "transparent",
-                    color: selectedVars.includes(key) ? "#fff" : color,
-                  }}
-                >
-                  {key}
-                </Button>
-              ))}
+              {categories[category as keyof Categories].map(
+                ({ key, color }: Category) => (
+                  <Button
+                    key={key}
+                    onClick={() => handleButtonClick(key)}
+                    variant={
+                      selectedVars.includes(key) ? "contained" : "outlined"
+                    }
+                    className={selectedVars.includes(key) ? "selected" : ""}
+                    style={{
+                      backgroundColor: selectedVars.includes(key)
+                        ? color
+                        : "transparent",
+                      color: selectedVars.includes(key) ? "#fff" : color,
+                    }}
+                  >
+                    {key}
+                  </Button>
+                ),
+              )}
             </div>
           </div>
         ))}

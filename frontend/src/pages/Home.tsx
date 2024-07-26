@@ -1,3 +1,4 @@
+import React from "react";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
@@ -13,7 +14,7 @@ const Home: React.FC = () => {
       }}
     >
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
-        Poster & Additional Informationmetrics
+        Poster & Additional Information
       </h1>
 
       <div
@@ -27,13 +28,7 @@ const Home: React.FC = () => {
           <Viewer
             fileUrl="/OMNI_Joseph_Quinn_07_19_2024.pdf"
             defaultScale={0.4}
-            theme={"dark"}
-            style={{
-              width: "100%",
-              maxWidth: "800px",
-              height: "80vh",
-              margin: "0 auto",
-            }}
+            theme="dark"
           />
         </Worker>
       </div>
@@ -77,36 +72,6 @@ const Home: React.FC = () => {
           learning.
         </p>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 768px) {
-          h1 {
-            font-size: 1.5rem;
-          }
-          .pdf-viewer {
-            width: 100%;
-            height: 60vh;
-          }
-          div > div {
-            padding: 10px;
-          }
-        }
-
-        @media (max-width: 480px) {
-          h1 {
-            font-size: 1.25rem;
-          }
-          h2 {
-            font-size: 1.125rem;
-          }
-          p {
-            font-size: 0.875rem;
-          }
-          .pdf-viewer {
-            height: 50vh;
-          }
-        }
-      `}</style>
     </div>
   );
 };

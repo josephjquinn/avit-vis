@@ -1,0 +1,37 @@
+.radar-container .recharts-legend-wrapper {
+  bottom: -25px !important;
+}
+
+.radar-ch {
+  width: 100%;
+  height: 500px;
+  margin-bottom: 50px;
+}
+
+@media (max-width: 1000px) {
+  .radar-container .recharts-legend-wrapper {
+    bottom: -5px !important;
+  }
+
+  .radar-ch {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 50px;
+  }
+}
+
+@media (max-width: 500px) {
+  .recharts-layer.recharts-polar-angle-axis-ticks {
+    font-size: 10px !important;
+  }
+
+  .recharts-layer.recharts-polar-radius-axis.radiusAxis {
+    font-size: 12px;
+  }
+
+  .radar-ch {
+    width: 100%;
+    height: 350px;
+    margin-bottom: 50px;
+  }
+}

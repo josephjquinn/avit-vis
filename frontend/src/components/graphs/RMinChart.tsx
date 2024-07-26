@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { NormalizationData } from "../../types";
 import { colorMap } from "../../colors";
+import "./Radar.css";
 
 interface RadarChartComponentProps {
   dataSets: { name: string; data: NormalizationData }[];
@@ -77,9 +78,9 @@ const MinChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
     radarDataFormatted.length > 0 ? radarDataFormatted : defaultRadarData;
 
   return (
-    <div style={{ width: "100%", height: 500 }}>
+    <div className="radar-ch">
       <ResponsiveContainer>
-        <RadarChart outerRadius={200} data={dataToDisplay}>
+        <RadarChart outerRadius="70%" data={dataToDisplay}>
           <PolarGrid />
           <PolarAngleAxis dataKey="subject" />
           <PolarRadiusAxis angle={30} />

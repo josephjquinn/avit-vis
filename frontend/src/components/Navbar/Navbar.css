@@ -38,9 +38,19 @@
 
 .navbar a:hover::before,
 .nav-link.active::before {
-  width: 100%; 
+  width: 100%;
 }
 
 .nav-link:not(.active):hover {
   color: #006666;
+}
+
+@media (max-width: 500px) {
+  .logo {
+    font-size: 25px;
+  }
+  .nav-link {
+    font-size: 15px;
+    margin-left: 20px;
+  }
 }

@@ -1,6 +1,6 @@
-import metricsData from "../../../backend/output/all_cases.json"; // Import the static JSON file
-import normalizationData from "../../../backend/output/normalized.json"; // Import the static JSON file
-import minData from "../../../backend/output/mins.json"; // Import the static JSON file
+import metricsData from "../../../server/output/all_cases.json"; // Import the static JSON file
+import normalizationData from "../../../server/output/normalized.json"; // Import the static JSON file
+import minData from "../../../server/output/mins.json"; // Import the static JSON file
 
 import { MetricsData, NormalizationData } from "../types";
 

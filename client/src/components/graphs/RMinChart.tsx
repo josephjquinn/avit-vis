@@ -95,7 +95,7 @@ const MinChart: React.FC<RadarChartComponentProps> = ({ dataSets }) => {
               fillOpacity={0.3}
             />
           ))}
-          <Tooltip content={<CustomTooltip title="" round={2} />} />
+          <Tooltip content={<CustomTooltip title="" round={6} />} />
           <Legend />
         </RadarChart>
       </ResponsiveContainer>

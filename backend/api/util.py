@@ -41,14 +41,14 @@ node_counts = {
     "s-64-8": 4,
     "s-256-32": 4,
     "s-256-16": 4,
-    "s-256-8": 4,
+    "s-256-8": 16,
     # B Cases
     "b-64-32": 4,
     "b-64-16": 4,
     "b-64-8": 4,
     "b-256-32": 4,
     "b-256-16": 4,
-    "b-256-8": 4,
+    "b-256-8": 16,
 }
 
 
@@ -204,26 +204,26 @@ def normalize(data_dict):
             if metric in min_values and metric in max_values:
                 if "rmse" in metric or "l1" in metric or "nrmse" in metric:
                     radar_data[case][metric] = round(
-                        90
+                        1
+                        + 99
                         * (max_values[metric] - metrics[metric])
-                        / (max_values[metric] - min_values[metric])
-                        + 10,
+                        / (max_values[metric] - min_values[metric]),
                         2,
                     )
                 else:
                     radar_data[case][metric] = round(
-                        90
+                        1
+                        + 99
                         * (metrics[metric] - min_values[metric])
-                        / (max_values[metric] - min_values[metric])
-                        + 10,
+                        / (max_values[metric] - min_values[metric]),
                         2,
                     )
             elif metric == "node_hours":
                 radar_data[case][metric] = round(
-                    90
+                    1
+                    + 99
                     * (metrics[metric] - min_node_hours)
-                    / (max_node_hours - min_node_hours)
-                    + 10,
+                    / (max_node_hours - min_node_hours),
                     2,
                 )
 

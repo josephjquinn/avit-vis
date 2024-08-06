@@ -68,7 +68,7 @@ cd server
 2. Install the dependencies:
 
 ```sh
-pip install -r requirements
+pip install -r requirements.txt
 ```
 
 3. Main script

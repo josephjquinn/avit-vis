@@ -1,39 +1,22 @@
 import React from "react";
-import { Viewer, Worker } from "@react-pdf-viewer/core";
-import "@react-pdf-viewer/core/lib/styles/index.css";
-import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import "./Home.css"; // Import the CSS file
 
-const Home: React.FC = () => {
+const PDFViewer: React.FC = () => {
   return (
-    <div
-      style={{
-        padding: "20px",
-        backgroundColor: "#282c34",
-        minHeight: "100vh",
-        color: "white",
-      }}
-    >
-      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
+    <div className="pdf-viewer-container">
+      <h1 className="pdf-viewer-header">
         Poster & Additional Information
       </h1>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
-          <Viewer
-            fileUrl="/OMNI_Joseph_Quinn_07_19_2024.pdf"
-            defaultScale={0.4}
-            theme="dark"
-          />
-        </Worker>
+      <div className="pdf-viewer-iframe-container">
+        <iframe
+          src="/OMNI_Joseph_Quinn_07_19_2024.pdf#view=FitH"
+          className="pdf-viewer-iframe"
+          title="PDF Viewer"
+        ></iframe>
       </div>
 
-      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <div className="pdf-viewer-content">
         <h2>Batch Size</h2>
         <p>
           Influences the amount of data processed in parallel during each
@@ -76,4 +59,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default PDFViewer;

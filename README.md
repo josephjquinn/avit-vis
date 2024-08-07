@@ -1,86 +1,92 @@
 # Net-Vis
 
-Net-Vis is an application designed for interactive visualization of performance metrics from machine learning models used in physics simulations. Built from scratch using React, TypeScript, and Python, this tool serves as a foundational component for machine learning research and can be extended for various applications.
+**Net-Vis** is a web application designed to provide interactive visualizations of performance metrics for machine learning models in physics simulations. This project was built using React, TypeScript, and Python.
+
+## Features
+
+- **Interactive Visualizations**: View and analyze performance metrics with dynamic charts and graphs.
+- **Data Processing CLI**: Process and normalize data with a command-line interface.
+- **NetCDF File Support**: Visualize fluid dynamics training data using matplotlib frame animations.
+- **Flask API Integration**: Optional Flask server for managing and processing training metrics.
 
 ## Screenshots
 
-<img width=600 src="./imgs/demo1.png" alt="Demo 1">
-<img width=600 src="./imgs/demo2.png" alt="Demo 2">
-<img width=600 src="./imgs/demo3.png" alt="Demo 3">
+<img width="600" src="./imgs/demo1.png" alt="Demo 1">
+<img width="600" src="./imgs/demo2.png" alt="Demo 2">
+<img width="600" src="./imgs/demo3.png" alt="Demo 3">
 
-## Data Processing CLI
+## Installation
 
-`--data_dir`: Specifies the directory containing data files (default is ./metrics/).
+### Prerequisites
 
-`--case_name`: Defines the name of a specific case to process. If not provided, the script will process all cases.
+- **Node.js** (v14 or later) for the client application.
+- **Python** (v3.8 or later) for the server and data processing scripts.
 
-`--all`: Processes all cases in the specified directory.
+### Setup
 
-`--norm`: Normalizes metrics for all cases.
+1. **Clone the Repository**
 
-`--min`: Finds the minimum values for all metrics across cases.
+   ```sh
+   git clone https://github.com/josephjquinn/net-vis.git
+   ```
 
-## Flask Server
+2. **Install Client Dependencies**
 
-The project contains an optional Flask server with provided API's for managing and processing training metrics.
+   Navigate to the `client` directory and install the required Node.js packages:
 
-Routes
+   ```sh
+   cd net-vis/client
+   npm install
+   ```
 
-- `GET /metrics/<case>/`: Extracts and processes training metrics from JSON files for a specific parameter case.
-- `GET /all/<case>/`: Aggregates and processes metrics from all cases in the metrics directory.
-- `GET /all` Normalizes all metrics to a relative scale (0-100) suitable for radar charts.
-- `GET /norm`: Extracts the minimum values from each metric across all cases.
+3. **Install Server Dependencies**
 
-### Installation
+   Navigate to the `server` directory and install the necessary Python packages:
 
-1. Clone the repository:
+   ```sh
+   cd ../server
+   pip install -r requirements.txt
+   ```
 
-```sh
-git clone https://github.com/josephjquinn/net-vis.git
-```
+4. **Run the Client Application**
 
-2. Change to client directory:
+   Start the client application:
 
-```sh
-cd client
-```
+   ```sh
+   npm run dev
+   ```
 
-3. Install dependencies
+5. **Run the Data Processing Scripts**
 
-```sh
-npm i
-```
+   Process your data using the CLI:
 
-4. Start app
+   ```sh
+   python main.py [flags]
+   ```
 
-```sh
-npm run dev
-```
+6. **Start the Optional Flask Server**
 
-### Data Processing
+   If you wish to use the Flask server for API management:
 
-1. Change to the server directory:
+   ```sh
+   python run.sh
+   ```
 
-```sh
-cd server
-```
+## CLI Flags
 
-2. Install the dependencies:
+The Data Processing Command Line Interface (CLI) provides several options for managing your data:
 
-```sh
-pip install -r requirements.txt
-```
+- `--data_dir`: Path to the directory containing data files (default: `./metrics/`).
+- `--case_name`: Specify a case to process; if omitted, all cases will be processed.
+- `--all`: Process all cases in the directory.
+- `--norm`: Normalize metrics for all cases.
+- `--min`: Compute minimum values for all metrics across cases.
 
-3. Main script
+## API Endpoints
 
-```sh
-python main.py [flags]
-```
+If using the optional Flask server, the following API endpoints are available:
 
-### Optional Flask Server
-
-1. Start Server
-
-```sh
-python run.sh
-```
+- `GET /metrics/<case>/`: Retrieve and process metrics for a specific case.
+- `GET /all/<case>/`: Aggregate metrics from all cases in the directory.
+- `GET /all`: Normalize metrics to a scale of 0-100 for radar charts.
+- `GET /norm`: Extract minimum values for metrics across all cases.
